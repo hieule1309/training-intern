@@ -6,9 +6,13 @@ import store from "./store";
 import "./assets/reset.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faXmark,
+  faCloudArrowUp,
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add(faMagnifyingGlass, faXmark);
+library.add(faMagnifyingGlass, faXmark, faCloudArrowUp);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 

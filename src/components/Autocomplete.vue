@@ -5,23 +5,24 @@
         <button class="search-icon">
           <font-awesome-icon icon="search" />
         </button>
-        <span
-          v-for="(user, id) in usersSelected"
-          :key="id"
+        <p
+          v-for="(province, index) in proviSelected"
+          :key="index"
           class="selected-item"
-          @click="deleteItem(id)"
-          >{{ user.name }}<font-awesome-icon class="close" icon="close"
-        /></span>
+          @click="deleteItem(province, index)"
+        >
+          {{ province.name }}<font-awesome-icon class="close" icon="close" />
+        </p>
         <input type="text" v-model="searchQuery" placeholder="Typing" />
       </div>
       <div class="option">
         <ul>
           <li
-            @click="itemClicked(index, user)"
-            v-for="(user, index) in matches"
+            @click="itemClicked(province, index)"
+            v-for="(province, index) in matches"
             :key="index"
           >
-            {{ user.name }}
+            {{ province.name }}
           </li>
         </ul>
       </div>
@@ -31,41 +32,43 @@
 
 <script>
 import axios from "axios";
-import { v4 as idv4 } from "uuid";
+// import { v4 as idv4 } from "uuid";
 
 export default {
   data() {
     return {
       searchQuery: "",
 
-      users: [],
+      provinces: [],
       selectedItem: null,
       selected: 0,
-      usersSelected: [],
+      proviSelected: [],
     };
   },
   async mounted() {
     try {
       const response = await axios.get("https://provinces.open-api.vn/api/p/");
-      this.users = response.data;
-      console.log(response.data);
+      this.provinces = response.data;
     } catch {
       console.log("error");
     }
   },
   methods: {
-    itemClicked(index, user) {
+    itemClicked(province, index) {
       this.selected = index;
-      this.selectItem(user);
+      this.selectItem(province);
     },
-    selectItem(user) {
-      this.selectedItem = user;
-      this.usersSelected.push({ name: this.selectedItem.name, id: idv4() });
+    selectItem(province) {
+      this.selectedItem = province;
+
+      this.proviSelected.push(province);
+      const idx = this.provinces.findIndex((p) => p.name == province.name);
+      this.provinces.splice(idx, 1);
       this.searchQuery = "";
     },
-    deleteItem(id) {
-      const idx = this.usersSelected.findIndex((c) => c.id == id);
-      return this.usersSelected.splice(idx, 1);
+    deleteItem(province, index) {
+      this.proviSelected.splice(index, 1);
+      this.provinces.push(province);
     },
   },
   computed: {
@@ -74,8 +77,8 @@ export default {
       if (this.searchQuery === "") {
         return [];
       }
-      return this.users.filter((user) => {
-        return Object.values(user).some((word) =>
+      return this.provinces.filter((province) => {
+        return Object.values(province).some((word) =>
           String(word).toLowerCase().includes(query)
         );
       });
@@ -97,20 +100,20 @@ export default {
 }
 .search-bar {
   display: flex;
-  width: 100%;
-  display: flex;
   flex-direction: row;
   align-items: center;
   padding: 8px 10px;
   gap: 4px;
 
-  height: 48px;
+  width: 100%;
+  /* height: 48px; */
 
   background: rgba(230, 249, 255, 0.2);
   /* Black / 04 */
 
   border: 1px solid #dbdbdb;
   border-radius: 4px;
+  flex-wrap: wrap;
 }
 .search-bar:focus-within {
   border: 1px solid #1991d2;
@@ -118,6 +121,7 @@ export default {
 .close {
   font-size: 14px;
   cursor: pointer;
+  margin-left: 8px;
 }
 
 .search-icon {
@@ -135,8 +139,7 @@ export default {
   align-items: center;
   padding: 4px 8px;
   justify-content: space-between;
-
-  min-width: 150px;
+  /* min-width: 150px; */
   height: 32px;
 
   background: #f0f4f8;
@@ -155,16 +158,15 @@ export default {
   text-align: center;
 }
 .popover input {
-  width: 100%;
-  height: 40px;
   font-size: 16px;
   border: none;
-  padding-left: 8px;
+  padding: 8px;
 }
 .option {
   max-height: 150px;
   overflow-y: scroll;
   margin-top: 5px;
+  background-color: #f1f5f8;
   filter: drop-shadow(0px 1px 8px rgba(102, 102, 102, 0.25));
   border-radius: 4px;
 }
@@ -174,7 +176,6 @@ ul {
   padding-left: 0;
 }
 li {
-  border-bottom: 1px solid lightgray;
   padding: 10px;
   background-color: #f1f1f1;
   cursor: pointer;
