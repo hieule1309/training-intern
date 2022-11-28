@@ -1,59 +1,72 @@
 <template>
   <div class="autocomplete">
-    <div class="popover">
-      <div class="search-bar">
-        <button class="search-icon">
-          <font-awesome-icon icon="search" />
-        </button>
-        <p
-          v-for="(province, index) in proviSelected"
-          :key="index"
-          class="selected-item"
-          @click="deleteItem(province, index)"
-        >
-          {{ province.name }}<font-awesome-icon class="close" icon="close" />
-        </p>
-        <input type="text" v-model="searchQuery" placeholder="Typing" />
-      </div>
-      <div class="option">
-        <ul>
-          <li
-            @click="itemClicked(province, index)"
-            v-for="(province, index) in matches"
+    <label for="focus">
+      <div class="popover">
+        <div class="search-bar">
+          <button class="search-icon">
+            <font-awesome-icon icon="search" />
+          </button>
+          <p
+            v-for="(province, index) in proviSelected"
             :key="index"
+            class="selected-item"
+            @click="deleteItem(province, index)"
           >
-            {{ province.name }}
-          </li>
-        </ul>
+            {{ province.name }}<font-awesome-icon class="close" icon="close" />
+          </p>
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Typing"
+            id="focus"
+          />
+        </div>
+        <div class="option">
+          <ul>
+            <li
+              @click="itemClicked(province, index)"
+              v-for="(province, index) in matches"
+              :key="index"
+            >
+              {{ province.name }}
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </label>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 // import { v4 as idv4 } from "uuid";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
     return {
       searchQuery: "",
 
-      provinces: [],
+      // provinces: [provinces],
+
       selectedItem: null,
       selected: 0,
       proviSelected: [],
     };
   },
-  async mounted() {
-    try {
-      const response = await axios.get("https://provinces.open-api.vn/api/p/");
-      this.provinces = response.data;
-    } catch {
-      console.log("error");
-    }
+  // async mounted() {
+  //   try {
+  //     const response = await axios.get("https://provinces.open-api.vn/api/p/");
+  //     this.provinces = response.data;
+  //   } catch {
+  //     console.log("error");
+  //   }
+  // },
+  created() {
+    this.getProvinces();
   },
   methods: {
+    ...mapActions("autocompleteModule", ["getProvinces"]),
     itemClicked(province, index) {
       this.selected = index;
       this.selectItem(province);
@@ -72,6 +85,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters("autocompleteModule", ["provinces"]),
     matches() {
       const query = this.searchQuery.toLowerCase();
       if (this.searchQuery === "") {
