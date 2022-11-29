@@ -7,28 +7,29 @@
             <font-awesome-icon icon="search" />
           </button>
           <p
-            v-for="(province, index) in citiSelected"
+            v-for="(item, index) in citiSelected"
             :key="index"
             class="selected-item"
-            @click="deleteItem(province)"
+            @click="deleteItem(index)"
           >
-            {{ province.name }}<font-awesome-icon class="close" icon="close" />
+            {{ item.name }}<font-awesome-icon class="close" icon="close" />
           </p>
           <input
             type="text"
             v-model="searchQuery"
             placeholder="Typing"
             id="focus"
+            autocomplete="off"
           />
         </div>
         <div class="option">
           <ul>
             <li
-              @click="selectItem(province, index)"
-              v-for="(province, index) in matches"
+              @click="selectItem(item, index)"
+              v-for="(item, index) in matches"
               :key="index"
             >
-              {{ province.name }}
+              {{ item.name }}
             </li>
           </ul>
         </div>
@@ -38,15 +39,11 @@
 </template>
 
 <script>
-// import axios from "axios";
-// import { v4 as idv4 } from "uuid";
-import { mapActions, mapGetters } from "vuex";
-
 export default {
   data() {
     return {
       searchQuery: "",
-      // provinces: [provinces],
+
       selectedItem: null,
     };
   },
@@ -60,41 +57,24 @@ export default {
       default: () => [],
     },
   },
-  // async mounted() {
-  //   try {
-  //     const response = await axios.get("https://provinces.open-api.vn/api/p/");
-  //     this.provinces = response.data;
-  //   } catch {
-  //     console.log("error");
-  //   }
-  // },
-  // created() {
-  //   this.getProvinces();
-  //   console.log(this.cities);
-  // },
   methods: {
-    ...mapActions("autocompleteModule", ["getProvinces"]),
-    selectItem(province) {
-      this.selectedItem = province;
-      this.$emit("selectedItem", province);
-      // this.proviSelected.push(province);
-      // const idx = this.provinces.findIndex((p) => p.name == province.name);
-      // this.provinces.splice(idx, 1);
+    selectItem(item) {
+      this.selectedItem = item;
+      this.$emit("selectedItem", item);
       this.searchQuery = "";
     },
-    deleteItem(province) {
-      this.$emit("deletedItem", province);
+    deleteItem(index) {
+      this.$emit("deletedItem", index);
     },
   },
   computed: {
-    ...mapGetters("autocompleteModule", ["provinces"]),
     matches() {
       const query = this.searchQuery.toLowerCase();
       if (this.searchQuery === "") {
         return [];
       }
-      return this.cities.filter((province) => {
-        return Object.values(province).some((word) =>
+      return this.cities.filter((item) => {
+        return Object.values(item).some((word) =>
           String(word).toLowerCase().includes(query)
         );
       });
