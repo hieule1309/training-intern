@@ -7,10 +7,10 @@
             <font-awesome-icon icon="search" />
           </button>
           <p
-            v-for="(province, index) in proviSelected"
+            v-for="(province, index) in citiSelected"
             :key="index"
             class="selected-item"
-            @click="deleteItem(province, index)"
+            @click="deleteItem(province)"
           >
             {{ province.name }}<font-awesome-icon class="close" icon="close" />
           </p>
@@ -24,7 +24,7 @@
         <div class="option">
           <ul>
             <li
-              @click="itemClicked(province, index)"
+              @click="selectItem(province, index)"
               v-for="(province, index) in matches"
               :key="index"
             >
@@ -46,13 +46,19 @@ export default {
   data() {
     return {
       searchQuery: "",
-
       // provinces: [provinces],
-
       selectedItem: null,
-      selected: 0,
-      proviSelected: [],
     };
+  },
+  props: {
+    cities: {
+      type: Array,
+      default: () => [],
+    },
+    citiSelected: {
+      type: Array,
+      default: () => [],
+    },
   },
   // async mounted() {
   //   try {
@@ -62,26 +68,22 @@ export default {
   //     console.log("error");
   //   }
   // },
-  created() {
-    this.getProvinces();
-  },
+  // created() {
+  //   this.getProvinces();
+  //   console.log(this.cities);
+  // },
   methods: {
     ...mapActions("autocompleteModule", ["getProvinces"]),
-    itemClicked(province, index) {
-      this.selected = index;
-      this.selectItem(province);
-    },
     selectItem(province) {
       this.selectedItem = province;
-
-      this.proviSelected.push(province);
-      const idx = this.provinces.findIndex((p) => p.name == province.name);
-      this.provinces.splice(idx, 1);
+      this.$emit("selectedItem", province);
+      // this.proviSelected.push(province);
+      // const idx = this.provinces.findIndex((p) => p.name == province.name);
+      // this.provinces.splice(idx, 1);
       this.searchQuery = "";
     },
-    deleteItem(province, index) {
-      this.proviSelected.splice(index, 1);
-      this.provinces.push(province);
+    deleteItem(province) {
+      this.$emit("deletedItem", province);
     },
   },
   computed: {
@@ -91,7 +93,7 @@ export default {
       if (this.searchQuery === "") {
         return [];
       }
-      return this.provinces.filter((province) => {
+      return this.cities.filter((province) => {
         return Object.values(province).some((word) =>
           String(word).toLowerCase().includes(query)
         );
