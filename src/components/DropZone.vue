@@ -7,7 +7,7 @@
         @dragleave.prevent="OnDragLeave"
         @dragover.prevent
         @drop.prevent="OnDrop"
-        :class="{ 'active-drop': active }"
+        :class="{ 'active-drop': active, 'drop-error': error }"
         class="drop-zone"
       >
         <font-awesome-icon icon="cloud-arrow-up" class="icon" />
@@ -103,6 +103,9 @@ export default {
 .container {
   margin-top: 100px;
   margin-left: 250px;
+  .drop-error {
+    border: 1px solid red;
+  }
 }
 .drop-zone {
   background: #f8f8f8;
