@@ -19,8 +19,8 @@ export default {
     return {};
   },
   components: { Autocomplete },
-  created() {
-    this.$store.dispatch("autocompleteModule/getProvinces");
+  async created() {
+    await this.$store.dispatch("autocompleteModule/getProvinces");
   },
   methods: {
     ...mapActions("autocompleteModule", [
@@ -30,7 +30,7 @@ export default {
     ]),
   },
   computed: {
-    ...mapGetters("autocompleteModule", ["provinces", "proviSelected"]),
+    ...mapGetters("autocompleteModule", ["loadProvinces", "loadProviSelected"]),
   },
 };
 </script>

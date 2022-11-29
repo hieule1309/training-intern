@@ -7,8 +7,8 @@ const autocompleteModule = {
     proviSelected: [],
   },
   getters: {
-    provinces: (state) => state.provinces,
-    proviSelected: (state) => state.proviSelected,
+    loadProvinces: (state) => state.provinces,
+    loadProviSelected: (state) => state.proviSelected,
   },
   mutations: {
     SET_PROVICES(state, payload) {
