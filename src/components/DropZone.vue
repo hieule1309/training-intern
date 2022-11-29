@@ -87,7 +87,33 @@ export default {
           });
         }
       });
-      console.log(this.filesList);
+      this.$http
+        .post(
+          "https://vue-trainning-default-rtdb.asia-southeast1.firebasedatabase.app/data.json",
+          this.filesList
+        )
+        .then(
+          (response) => {
+            console.log(response);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      // this.$http
+      //   .get(
+      //     "https://vue-trainning-default-rtdb.asia-southeast1.firebasedatabase.app/data.json"
+      //   )
+      //   .then((response) => {
+      //     return response.json();
+      //   })
+      //   .then((data) => {
+      //     const newArr = [];
+      //     for (let key in data) {
+      //       newArr.push(data[key]);
+      //     }
+      //     this.filesList = newArr;
+      //   });
     },
     onInputChange(e) {
       console.log(e);

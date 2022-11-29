@@ -1,6 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
+import VueResource from "vue-resource";
 import store from "./store";
 
 import "./assets/reset.css";
@@ -11,6 +12,8 @@ import {
   faXmark,
   faCloudArrowUp,
 } from "@fortawesome/free-solid-svg-icons";
+
+Vue.use(VueResource);
 
 library.add(faMagnifyingGlass, faXmark, faCloudArrowUp);
 
