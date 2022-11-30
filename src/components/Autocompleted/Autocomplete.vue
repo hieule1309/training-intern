@@ -2,7 +2,7 @@
   <div class="autocomplete">
     <label for="focus">
       <div class="popover">
-        <div class="search-bar">
+        <div class="search-bar" @focusout="closeDropdown" tabindex="0">
           <button class="search-icon">
             <font-awesome-icon icon="search" />
           </button>
@@ -10,9 +10,13 @@
             v-for="(item, index) in citiSelected"
             :key="index"
             class="selected-item"
-            @click="deleteItem(index)"
           >
-            {{ item.name }}<font-awesome-icon class="close" icon="close" />
+            {{ item.name
+            }}<font-awesome-icon
+              class="close"
+              @click="deleteItem(item, index)"
+              icon="close"
+            />
           </p>
           <input
             type="text"
@@ -20,9 +24,10 @@
             placeholder="Typing"
             id="focus"
             autocomplete="off"
+            @focus="openDropdown"
           />
         </div>
-        <div class="option">
+        <div v-if="open" class="option">
           <ul>
             <li
               @click="selectItem(item, index)"
@@ -43,7 +48,7 @@ export default {
   data() {
     return {
       searchQuery: "",
-
+      open: false,
       selectedItem: null,
     };
   },
@@ -58,13 +63,19 @@ export default {
     },
   },
   methods: {
+    closeDropdown() {
+      this.open = false;
+    },
+    openDropdown() {
+      this.open = true;
+    },
     selectItem(item) {
       this.selectedItem = item;
       this.$emit("selectedItem", item);
       this.searchQuery = "";
     },
-    deleteItem(index) {
-      this.$emit("deletedItem", index);
+    deleteItem(item, index) {
+      this.$emit("deletedItem", { item: item, idx: index });
     },
   },
   computed: {
@@ -74,6 +85,7 @@ export default {
         return [];
       }
       return this.cities.filter((item) => {
+        this.open = true;
         return Object.values(item).some((word) =>
           String(word).toLowerCase().includes(query)
         );
@@ -173,8 +185,9 @@ ul {
 }
 li {
   padding: 10px;
-  background-color: #f1f1f1;
+  background-color: #f1f5f8;
   cursor: pointer;
+  height: 40px;
 }
 .option ul li.selected {
   background-color: rgb(130, 255, 113);

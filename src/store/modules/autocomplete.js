@@ -19,9 +19,9 @@ const autocompleteModule = {
       const idx = state.provinces.findIndex((p) => p.name == province.name);
       state.provinces.splice(idx, 1);
     },
-    DELETE_ITEM(state, province) {
-      state.proviSelected.splice(province, 1);
-      state.provinces.push(province);
+    DELETE_ITEM(state, payload) {
+      state.proviSelected.splice(payload.idx, 1);
+      state.provinces.push(payload.item);
     },
   },
   actions: {

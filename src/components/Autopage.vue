@@ -2,8 +2,8 @@
   <div>
     <h1>Autocomplete</h1>
     <Autocomplete
-      :cities="provinces"
-      :citiSelected="proviSelected"
+      :cities="loadProvinces"
+      :citiSelected="loadProviSelected"
       :place="'Search province'"
       @selectedItem="selectedItem"
       @deletedItem="deletedItem"
