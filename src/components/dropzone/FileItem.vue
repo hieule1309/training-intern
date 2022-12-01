@@ -1,9 +1,25 @@
 <template>
   <div class="file-item" v-if="this.file.size < 10000000">
-    <img class="file-img" v-if="file.extType === 1" src="@/assets/excel.png" />
-    <img class="file-img" v-if="file.extType === 2" src="@/assets/word.png" />
-    <img class="file-img" v-if="file.extType === 3" src="@/assets/pdf.png" />
-    <img class="file-img" v-if="file.extType === 4" src="@/assets/000.png" />
+    <img
+      class="file-img"
+      v-if="file.extType === FILE_TYPE.EXCEL"
+      src="@/assets/excel.png"
+    />
+    <img
+      class="file-img"
+      v-if="file.extType === FILE_TYPE.DOC"
+      src="@/assets/word.png"
+    />
+    <img
+      class="file-img"
+      v-if="file.extType === FILE_TYPE.PDF"
+      src="@/assets/pdf.png"
+    />
+    <img
+      class="file-img"
+      v-if="file.extType === FILE_TYPE.UNKNOW"
+      src="@/assets/000.png"
+    />
 
     <div class="file-content">
       <p class="file-name">{{ file.name }}</p>
@@ -15,7 +31,11 @@
 
 <script>
 // import { niceBytes } from "../../utils/bytesToKb";
+import { FILE_TYPE } from "@/constants/index";
 export default {
+  data() {
+    return { FILE_TYPE };
+  },
   props: ["file"],
   methods: {
     niceBytes(x) {

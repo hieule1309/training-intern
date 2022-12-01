@@ -17,6 +17,7 @@
 import Dropzone from "./dropzone/DropZone.vue";
 import app from "../configs/firebase";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { FILE_TYPE } from "@/constants/index";
 export default {
   data() {
     return {
@@ -60,17 +61,17 @@ export default {
               file.type ===
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             ) {
-              file.extType = 1;
+              file.extType = FILE_TYPE.EXCEL;
             } else if (
               file.type === "application/msword" ||
               file.type ===
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
-              file.extType = 2;
+              file.extType = FILE_TYPE.DOC;
             } else if (file.type === "application/pdf") {
-              file.extType = 3;
+              file.extType = FILE_TYPE.PDF;
             } else {
-              file.extType = 4;
+              file.extType = FILE_TYPE.UNKNOW;
             }
           });
         }
