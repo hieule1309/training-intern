@@ -5,6 +5,7 @@ import HelloWorld from "../components/HelloWorld.vue";
 import Todo from "../components/Todo.vue";
 import Autocomplete from "../components/Autocomplete";
 import DropzonePage from "../components/DropzonePage";
+import MultiFormPage from "../components/MultiFormPage";
 Vue.use(VueRouter);
 
 const routes = [
@@ -31,6 +32,11 @@ const routes = [
         path: "/dropzonepage",
         name: "DropzonePage",
         component: DropzonePage,
+      },
+      {
+        path: "/multiform",
+        name: "MultiForm",
+        component: MultiFormPage,
       },
     ],
   },
