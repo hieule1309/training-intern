@@ -36,8 +36,8 @@ export default {
         },
         {
           id: 4,
-          label: "DropZone",
-          name: "DropZone",
+          label: "DropzonePage",
+          name: "DropzonePage",
         },
       ],
     };

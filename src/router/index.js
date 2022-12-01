@@ -4,7 +4,7 @@ import LayoutComponent from "../layout/LayoutComponent.vue";
 import HelloWorld from "../components/HelloWorld.vue";
 import Todo from "../components/Todo.vue";
 import Autocomplete from "../components/Autocomplete";
-import DropZone from "../components/DropZone.vue";
+import DropzonePage from "../components/DropzonePage";
 Vue.use(VueRouter);
 
 const routes = [
@@ -28,9 +28,9 @@ const routes = [
         component: Autocomplete,
       },
       {
-        path: "/dropzone",
-        name: "DropZone",
-        component: DropZone,
+        path: "/dropzonepage",
+        name: "DropzonePage",
+        component: DropzonePage,
       },
     ],
   },

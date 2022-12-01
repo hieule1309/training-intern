@@ -1,13 +1,12 @@
 <template>
   <div>
-    <h2>DropZone</h2>
     <div class="container">
       <div
         @dragenter.prevent="OnDragEnter"
         @dragleave.prevent="OnDragLeave"
         @dragover.prevent
-        @drop.prevent="OnDrop"
-        :class="{ 'active-drop': active, 'drop-error': error }"
+        @drop.prevent="onDrop"
+        :class="{ 'active-drop': active, 'drop-error': errors }"
         class="drop-zone"
       >
         <font-awesome-icon icon="cloud-arrow-up" class="icon" />
@@ -20,30 +19,41 @@
         @change="onInputChange"
         id="dropzoneFile"
       />
-      <div v-if="error" class="text-error">The maximum file size is 10MB</div>
+      <div v-if="errors" class="text-error">The maximum file size is 10MB</div>
       <div class="files-group">
         <FileItem
-          v-for="(file, index) in this.filesList"
+          v-for="(file, index) in this.files"
           :key="index"
           :file="file"
           @onRemove="onRemove(index)"
         />
       </div>
+      <button class="btn" @click="uploadFiles">Submit</button>
     </div>
   </div>
 </template>
 
 <script>
-import FileItem from "./dropzone/FileItem.vue";
+import FileItem from "./FileItem.vue";
 
 export default {
   data() {
     return {
       dropzoneFile: "",
       active: false,
-      filesList: [],
-      error: false,
+      // filesList: [],
+      // error: false,
     };
+  },
+  props: {
+    errors: {
+      type: Boolean,
+      default: false,
+    },
+    files: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: { FileItem },
   methods: {
@@ -55,71 +65,20 @@ export default {
       e.preventDefault();
       this.active = false;
     },
-    OnDrop(e) {
+    onDrop(e) {
       e.preventDefault();
       e.stopPropagation();
       this.active = false;
-      const files = e.dataTransfer.files;
-      Array.from(files).forEach((file) => {
-        if (file.size > 10000000) {
-          this.error = true;
-        } else {
-          this.error = false;
-          this.filesList.push(file);
-          Array.from(this.filesList).forEach((file) => {
-            if (
-              file.type === "application/vnd.ms-excel" ||
-              file.type ===
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            ) {
-              file.extType = 1;
-            } else if (
-              file.type === "application/msword" ||
-              file.type ===
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ) {
-              file.extType = 2;
-            } else if (file.type === "application/pdf") {
-              file.extType = 3;
-            } else {
-              file.extType = 4;
-            }
-          });
-        }
-      });
-      this.$http
-        .post(
-          "https://vue-trainning-default-rtdb.asia-southeast1.firebasedatabase.app/data.json",
-          this.filesList
-        )
-        .then(
-          (response) => {
-            console.log(response);
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-      // this.$http
-      //   .get(
-      //     "https://vue-trainning-default-rtdb.asia-southeast1.firebasedatabase.app/data.json"
-      //   )
-      //   .then((response) => {
-      //     return response.json();
-      //   })
-      //   .then((data) => {
-      //     const newArr = [];
-      //     for (let key in data) {
-      //       newArr.push(data[key]);
-      //     }
-      //     this.filesList = newArr;
-      //   });
+      this.$emit("onDrop", e.dataTransfer.files);
     },
     onInputChange(e) {
       console.log(e);
     },
     onRemove(index) {
-      this.filesList.splice(index, 1);
+      this.$emit("onRemove", index);
+    },
+    uploadFiles() {
+      this.$emit("uploadFiles");
     },
   },
 };
@@ -180,5 +139,14 @@ export default {
   margin-left: -16px;
   flex-wrap: wrap;
   width: 842px;
+}
+.btn {
+  background-color: rgb(10, 196, 10);
+  border: none;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  margin-top: 4px;
+  cursor: pointer;
 }
 </style>
