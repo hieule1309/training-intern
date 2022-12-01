@@ -11,14 +11,21 @@
       >
         <font-awesome-icon icon="cloud-arrow-up" class="icon" />
         <p class="text">Drag and Drop Files</p>
-        <label for="dropzoneFile" class="text-link">Browse Files</label>
+        <label for="dropzoneFile" class="text-link">Browse Files </label>
+        <input
+          class="dropzone-file"
+          type="file"
+          @change="onInputChange"
+          id="dropzoneFile"
+          multiple
+        />
       </div>
-      <input
+      <!-- <input
         class="dropzone-file"
         type="file"
         @change="onInputChange"
         id="dropzoneFile"
-      />
+      /> -->
       <div v-if="errors" class="text-error">The maximum file size is 10MB</div>
       <div class="files-group">
         <FileItem
@@ -72,7 +79,7 @@ export default {
       this.$emit("onDrop", e.dataTransfer.files);
     },
     onInputChange(e) {
-      console.log(e);
+      this.$emit("onInputChange", e.target.files);
     },
     onRemove(index) {
       this.$emit("onRemove", index);

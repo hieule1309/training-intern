@@ -39,11 +39,6 @@ export default {
           label: "DropzonePage",
           name: "DropzonePage",
         },
-        {
-          id: 5,
-          label: "MultiForm",
-          name: "MultiForm",
-        },
       ],
     };
   },

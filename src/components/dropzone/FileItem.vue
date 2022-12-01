@@ -47,12 +47,14 @@ export default {
   align-items: center;
   margin-left: 16px;
   margin-top: 8px;
+
   .file-img {
     width: 32px;
     height: 32px;
   }
   .file-content {
     margin-left: 4px;
+    overflow: hidden;
     .file-name {
       color: #333333;
       font-size: 12px;

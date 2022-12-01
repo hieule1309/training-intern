@@ -8,6 +8,7 @@
       :files="filesList"
       @uploadFiles="uploadFiles"
       @onRemove="onRemove"
+      @onInputChange="onInputChange"
     />
   </div>
 </template>
@@ -26,10 +27,27 @@ export default {
   components: { Dropzone },
   methods: {
     onDrop(data) {
-      //   e.preventDefault();
-      //   e.stopPropagation();
-      //   this.active = false;
-      //   const files = e.dataTransfer.files;
+      this.onInputChange(data);
+    },
+    onRemove(index) {
+      this.filesList.splice(index, 1);
+    },
+    async uploadFiles() {
+      try {
+        await this.filesList.forEach((file) => {
+          const storage = getStorage(app);
+          const storageRef = ref(storage, "filesList/" + file.name);
+          uploadBytes(storageRef, file).then((snapshot) => {
+            console.log("uploaded", snapshot);
+          });
+        });
+        this.filesList = [];
+        this.error = false;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    onInputChange(data) {
       Array.from(data).forEach((file) => {
         if (file.size > 10000000) {
           this.error = true;
@@ -57,23 +75,6 @@ export default {
           });
         }
       });
-    },
-    onRemove(index) {
-      this.filesList.splice(index, 1);
-    },
-    async uploadFiles() {
-      try {
-        await this.filesList.forEach((file) => {
-          const storage = getStorage(app);
-          const storageRef = ref(storage, "filesList/" + file.name);
-          uploadBytes(storageRef, file).then((snapshot) => {
-            console.log("uploaded", snapshot);
-          });
-        });
-        setTimeout((this.filesList = []), 3000);
-      } catch (err) {
-        console.log(err);
-      }
     },
   },
 };
