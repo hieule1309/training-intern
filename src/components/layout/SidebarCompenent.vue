@@ -31,8 +31,8 @@ export default {
         },
         {
           id: 3,
-          label: "Autocomplete",
-          name: "Autocomplete",
+          label: "AutoPage",
+          name: "AutoPage",
         },
         {
           id: 4,

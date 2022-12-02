@@ -2,33 +2,39 @@
   <div class="autocomplete">
     <label for="focus">
       <div class="popover">
-        <div class="search-bar">
+        <div class="search-bar" @focusout="closeDropdown" tabindex="0">
           <button class="search-icon">
             <font-awesome-icon icon="search" />
           </button>
           <p
-            v-for="(province, index) in proviSelected"
+            v-for="(item, index) in citiSelected"
             :key="index"
             class="selected-item"
-            @click="deleteItem(province, index)"
           >
-            {{ province.name }}<font-awesome-icon class="close" icon="close" />
+            {{ item.name
+            }}<font-awesome-icon
+              class="close"
+              @click="deleteItem(item, index)"
+              icon="close"
+            />
           </p>
           <input
             type="text"
             v-model="searchQuery"
             placeholder="Typing"
             id="focus"
+            autocomplete="off"
+            @focus="openDropdown"
           />
         </div>
-        <div class="option">
+        <div v-if="open" class="option">
           <ul>
             <li
-              @click="itemClicked(province, index)"
-              v-for="(province, index) in matches"
+              @click="selectItem(item, index)"
+              v-for="(item, index) in matches"
               :key="index"
             >
-              {{ province.name }}
+              {{ item.name }}
             </li>
           </ul>
         </div>
@@ -38,61 +44,49 @@
 </template>
 
 <script>
-// import axios from "axios";
-// import { v4 as idv4 } from "uuid";
-import { mapActions, mapGetters } from "vuex";
-
 export default {
   data() {
     return {
       searchQuery: "",
-
-      // provinces: [provinces],
-
+      open: false,
       selectedItem: null,
-      selected: 0,
-      proviSelected: [],
     };
   },
-  // async mounted() {
-  //   try {
-  //     const response = await axios.get("https://provinces.open-api.vn/api/p/");
-  //     this.provinces = response.data;
-  //   } catch {
-  //     console.log("error");
-  //   }
-  // },
-  created() {
-    this.getProvinces();
+  props: {
+    cities: {
+      type: Array,
+      default: () => [],
+    },
+    citiSelected: {
+      type: Array,
+      default: () => [],
+    },
   },
   methods: {
-    ...mapActions("autocompleteModule", ["getProvinces"]),
-    itemClicked(province, index) {
-      this.selected = index;
-      this.selectItem(province);
+    closeDropdown() {
+      this.open = false;
     },
-    selectItem(province) {
-      this.selectedItem = province;
-
-      this.proviSelected.push(province);
-      const idx = this.provinces.findIndex((p) => p.name == province.name);
-      this.provinces.splice(idx, 1);
+    openDropdown() {
+      this.open = true;
+    },
+    selectItem(item) {
+      this.selectedItem = item;
+      this.$emit("selectedItem", item);
       this.searchQuery = "";
     },
-    deleteItem(province, index) {
-      this.proviSelected.splice(index, 1);
-      this.provinces.push(province);
+    deleteItem(item, index) {
+      this.$emit("deletedItem", { item: item, idx: index });
     },
   },
   computed: {
-    ...mapGetters("autocompleteModule", ["provinces"]),
     matches() {
       const query = this.searchQuery.toLowerCase();
       if (this.searchQuery === "") {
         return [];
       }
-      return this.provinces.filter((province) => {
-        return Object.values(province).some((word) =>
+      return this.cities.filter((item) => {
+        this.open = true;
+        return Object.values(item).some((word) =>
           String(word).toLowerCase().includes(query)
         );
       });
@@ -109,7 +103,6 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   padding: 0px;
-
   height: 48px;
 }
 .search-bar {
@@ -118,13 +111,10 @@ export default {
   align-items: center;
   padding: 8px 10px;
   gap: 4px;
-
   width: 100%;
   /* height: 48px; */
-
   background: rgba(230, 249, 255, 0.2);
   /* Black / 04 */
-
   border: 1px solid #dbdbdb;
   border-radius: 4px;
   flex-wrap: wrap;
@@ -137,7 +127,6 @@ export default {
   cursor: pointer;
   margin-left: 8px;
 }
-
 .search-icon {
   width: 24px;
   height: 24px;
@@ -155,12 +144,10 @@ export default {
   justify-content: space-between;
   /* min-width: 150px; */
   height: 32px;
-
   background: #f0f4f8;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
 }
-
 .popover {
   min-height: 50px;
   border-radius: 3px;
@@ -191,8 +178,9 @@ ul {
 }
 li {
   padding: 10px;
-  background-color: #f1f1f1;
+  background-color: #f1f5f8;
   cursor: pointer;
+  height: 40px;
 }
 .option ul li.selected {
   background-color: rgb(130, 255, 113);

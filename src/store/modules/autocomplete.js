@@ -4,13 +4,24 @@ const autocompleteModule = {
   namespaced: true,
   state: {
     provinces: [],
+    proviSelected: [],
   },
   getters: {
-    provinces: (state) => state.provinces,
+    loadProvinces: (state) => state.provinces,
+    loadProviSelected: (state) => state.proviSelected,
   },
   mutations: {
     SET_PROVICES(state, payload) {
       state.provinces = payload;
+    },
+    SELECTED_ITEM(state, province) {
+      state.proviSelected.push(province);
+      const idx = state.provinces.findIndex((p) => p.name == province.name);
+      state.provinces.splice(idx, 1);
+    },
+    DELETE_ITEM(state, payload) {
+      state.proviSelected.splice(payload.idx, 1);
+      state.provinces.push(payload.item);
     },
   },
   actions: {
@@ -23,6 +34,12 @@ const autocompleteModule = {
       } catch {
         console.log("error");
       }
+    },
+    selectedItem({ commit }, data) {
+      commit("SELECTED_ITEM", data);
+    },
+    deletedItem({ commit }, data) {
+      commit("DELETE_ITEM", data);
     },
   },
 };
