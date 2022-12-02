@@ -29,6 +29,24 @@
         <option value="danang">Đà Nẵng</option>
       </select>
     </div>
+    <div class="position-valid">
+      <p class="text">Vị trí làm việc</p>
+      <p class="text-ms">Có thể chọn nhiều vị trí mà bạn muốn làm việc.</p>
+      <input class="position-input" />
+    </div>
+    <div class="introduc-valid">
+      <p class="text">Mô tả về bản thân</p>
+      <textarea
+        type="text"
+        class="text-area"
+        @keyup="charCount"
+        v-model="message"
+      ></textarea>
+      <p>{{ this.char }}/1000</p>
+    </div>
+    <div class="image-valid">
+      <p class="text">Ảnh cá nhân</p>
+    </div>
   </div>
 </template>
 
@@ -39,6 +57,9 @@ export default {
   data() {
     return {
       time: null,
+      message: "",
+      limit: 1000,
+      char: 0,
     };
   },
   components: { DatePicker },
@@ -47,7 +68,11 @@ export default {
       const today = new Date();
       return date > today;
     },
+    charCount() {
+      this.char = this.message.length;
+    },
   },
+  computed: {},
 };
 </script>
 
@@ -83,6 +108,12 @@ export default {
     line-height: 20px;
     margin-left: 4px;
   }
+  .text-ms {
+    font-size: 12px;
+    line-height: 20px;
+    color: #666666;
+    margin-left: 12px;
+  }
   .valid-input {
     width: 528px;
     height: 40px;
@@ -110,5 +141,30 @@ export default {
 
   border: 1px solid #dbdbdb;
   border-radius: 4px;
+}
+.position-input {
+  padding: 16px 10px;
+  gap: 8px;
+
+  width: 528px;
+  height: 40px;
+
+  /* Gray2/Gray06 (旧Gray03) */
+
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+}
+.text-area {
+  padding: 8px 10px;
+  gap: 10px;
+  width: 528px;
+  height: 152px;
+  left: 32px;
+  top: 370px;
+
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  resize: none;
 }
 </style>

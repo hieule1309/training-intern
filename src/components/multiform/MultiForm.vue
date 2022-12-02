@@ -13,12 +13,14 @@
       </div>
       <div class="line"></div>
     </div>
-    <FormRecruit />
+    <FormRecruit v-if="activePhase === 1" />
+    <FormExp v-if="activePhase === 2" />
   </div>
 </template>
 
 <script>
 import FormRecruit from "./FormRecruit.vue";
+import FormExp from "./FormExp.vue";
 export default {
   data() {
     return {
@@ -27,9 +29,10 @@ export default {
         { id: 2, name: "Kinh nghiệm làm việc", active: false, disable: true },
         { id: 3, name: "Xác nhận thông tin", active: false, disable: true },
       ],
+      activePhase: 2,
     };
   },
-  components: { FormRecruit },
+  components: { FormRecruit, FormExp },
 };
 </script>
 
