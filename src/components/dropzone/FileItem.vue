@@ -1,12 +1,28 @@
 <template>
   <div class="file-item" v-if="this.file.size < 10000000">
-    <img class="file-img" v-if="file.extType === 1" src="@/assets/excel.png" />
-    <img class="file-img" v-if="file.extType === 2" src="@/assets/word.png" />
-    <img class="file-img" v-if="file.extType === 3" src="@/assets/pdf.png" />
-    <img class="file-img" v-if="file.extType === 4" src="@/assets/000.png" />
+    <img
+      class="file-img"
+      v-if="file.extType === FILE_TYPE.EXCEL"
+      src="@/assets/excel.png"
+    />
+    <img
+      class="file-img"
+      v-if="file.extType === FILE_TYPE.DOC"
+      src="@/assets/word.png"
+    />
+    <img
+      class="file-img"
+      v-if="file.extType === FILE_TYPE.PDF"
+      src="@/assets/pdf.png"
+    />
+    <img
+      class="file-img"
+      v-if="file.extType === FILE_TYPE.UNKNOW"
+      src="@/assets/000.png"
+    />
 
     <div class="file-content">
-      <p class="file-name">{{ file.name }}</p>
+      <p class="file-name">{{ truncateString(file.name, 30) }}</p>
       <p class="file-size">{{ niceBytes(file.size) }}</p>
     </div>
     <font-awesome-icon class="close" icon="close" @click="onRemove" />
@@ -15,22 +31,31 @@
 
 <script>
 // import { niceBytes } from "../../utils/bytesToKb";
+import { FILE_TYPE } from "@/constants/index";
 export default {
+  data() {
+    return { FILE_TYPE };
+  },
   props: ["file"],
   methods: {
     niceBytes(x) {
       const units = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
       let l = 0,
         n = parseInt(x, 10) || 0;
-
       while (n >= 1024 && ++l) {
         n = n / 1024;
       }
-
       return n.toFixed(n < 10 && l > 0 ? 1 : 0) + " " + units[l];
     },
     onRemove(file) {
       this.$emit("onRemove", file);
+    },
+    truncateString(str, num) {
+      if (str.length > num) {
+        return str.slice(0, num) + "...";
+      } else {
+        return str;
+      }
     },
   },
 };
@@ -53,6 +78,7 @@ export default {
   }
   .file-content {
     margin-left: 4px;
+    overflow: hidden;
     .file-name {
       color: #333333;
       font-size: 12px;

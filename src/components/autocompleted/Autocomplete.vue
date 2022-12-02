@@ -97,13 +97,7 @@ export default {
 
 <style scoped>
 .autocomplete {
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0px;
-  height: 48px;
+  width: 528px;
 }
 .search-bar {
   display: flex;
@@ -151,10 +145,7 @@ export default {
 .popover {
   min-height: 50px;
   border-radius: 3px;
-  position: absolute;
-  top: 46px;
-  left: 0;
-  right: 0;
+
   background-color: #fff;
   text-align: center;
 }

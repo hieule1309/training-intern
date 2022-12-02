@@ -8,6 +8,7 @@
       :files="filesList"
       @uploadFiles="uploadFiles"
       @onRemove="onRemove"
+      @onInputChange="onInputChange"
     />
   </div>
 </template>
@@ -16,6 +17,7 @@
 import Dropzone from "./dropzone/DropZone.vue";
 import app from "../configs/firebase";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { FILE_TYPE } from "@/constants/index";
 export default {
   data() {
     return {
@@ -26,37 +28,7 @@ export default {
   components: { Dropzone },
   methods: {
     onDrop(data) {
-      //   e.preventDefault();
-      //   e.stopPropagation();
-      //   this.active = false;
-      //   const files = e.dataTransfer.files;
-      Array.from(data).forEach((file) => {
-        if (file.size > 10000000) {
-          this.error = true;
-        } else {
-          this.error = false;
-          this.filesList.push(file);
-          Array.from(this.filesList).forEach((file) => {
-            if (
-              file.type === "application/vnd.ms-excel" ||
-              file.type ===
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            ) {
-              file.extType = 1;
-            } else if (
-              file.type === "application/msword" ||
-              file.type ===
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            ) {
-              file.extType = 2;
-            } else if (file.type === "application/pdf") {
-              file.extType = 3;
-            } else {
-              file.extType = 4;
-            }
-          });
-        }
-      });
+      this.onInputChange(data);
     },
     onRemove(index) {
       this.filesList.splice(index, 1);
@@ -70,10 +42,40 @@ export default {
             console.log("uploaded", snapshot);
           });
         });
-        setTimeout((this.filesList = []), 3000);
+        this.filesList = [];
+        this.error = false;
       } catch (err) {
         console.log(err);
       }
+    },
+    onInputChange(data) {
+      Array.from(data).forEach((file) => {
+        if (file.size > 10000000) {
+          this.error = true;
+        } else {
+          this.error = false;
+          this.filesList.push(file);
+          Array.from(this.filesList).forEach((file) => {
+            if (
+              file.type === "application/vnd.ms-excel" ||
+              file.type ===
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            ) {
+              file.extType = FILE_TYPE.EXCEL;
+            } else if (
+              file.type === "application/msword" ||
+              file.type ===
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ) {
+              file.extType = FILE_TYPE.DOC;
+            } else if (file.type === "application/pdf") {
+              file.extType = FILE_TYPE.PDF;
+            } else {
+              file.extType = FILE_TYPE.UNKNOW;
+            }
+          });
+        }
+      });
     },
   },
 };

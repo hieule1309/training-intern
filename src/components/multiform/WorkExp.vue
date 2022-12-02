@@ -6,17 +6,28 @@
         <option value="vng">VNG</option>
         <option value="viettel">Viettel</option>
       </select>
-      <img class="trash-img" src="@/assets/Trash.png" />
+      <img class="trash-img" src="@/assets/Trash.png" @click="remove" />
     </div>
     <div class="valid-position">
-      <span class="must">Must</span>
-      <span class="text">Vị trí từng làm</span>
+      <div class="valid-groups">
+        <span class="must">Must</span>
+        <label class="text" for="job">Vị trí từng làm</label>
+      </div>
+      <input
+        type="text"
+        class="valid-input"
+        id="job"
+        required
+        :class="{ error: errorjob }"
+        @keyup="errorHandle"
+        v-model="job"
+      />
+      <p class="text-error" v-if="errorjob">Không vượt quá 100 kí tự</p>
     </div>
-    <input type="text" class="valid-input" />
     <div class="date-valid">
       <div class="valid-groups">
         <span class="must">Must</span>
-        <span class="text">Ngày sinh</span>
+        <span class="text">Thời gian làm việc</span>
       </div>
       <div class="datepicker-group">
         <DatePicker
@@ -35,6 +46,17 @@
         />
       </div>
     </div>
+    <div class="about-job">
+      <p class="text">Mô tả về công việc</p>
+      <textarea
+        type="text"
+        class="text-area"
+        @keyup="errorHandle"
+        v-model="message"
+        :class="{ error: error }"
+      ></textarea>
+      <p class="text-error" v-if="error">Không vượt quá 5000 kí tự</p>
+    </div>
   </div>
 </template>
 
@@ -46,7 +68,20 @@ export default {
     return {
       time1: "",
       time2: "",
+      message: "",
+      job: "",
+      error: false,
+      errorjob: false,
     };
+  },
+  methods: {
+    errorHandle() {
+      this.message.length > 5000 ? (this.error = true) : (this.error = false);
+      this.job.length > 100 ? (this.errorjob = true) : (this.errorjob = false);
+    },
+    remove() {
+      this.$emit("remove");
+    },
   },
   components: { DatePicker },
 };
@@ -59,7 +94,7 @@ export default {
   align-items: flex-start;
   padding: 24px;
   gap: 24px;
-
+  margin-bottom: 20px;
   width: 1026px;
   height: 504px;
   left: 254px;
@@ -141,8 +176,29 @@ export default {
     top: 15px;
   }
 }
+.text-area {
+  padding: 8px 10px;
+  gap: 10px;
+  width: 528px;
+  height: 152px;
+  left: 24px;
+  top: 314px;
+
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  resize: none;
+}
 .date {
   width: 118px;
   height: 40px;
+}
+.error {
+  border: 1px solid #ed5d5d !important;
+}
+
+.text-error {
+  color: #ed5d5d;
+  font-size: 14px;
 }
 </style>

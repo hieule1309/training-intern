@@ -3,9 +3,19 @@
     <div class="name-valid">
       <div class="valid-groups">
         <span class="must">Must</span>
-        <span class="text">Họ và tên</span>
+        <label class="text" for="username">Họ và tên</label>
       </div>
-      <input type="text" class="valid-input" />
+      <input
+        type="text"
+        class="valid-input"
+        :class="{ error: errorname }"
+        @keyup="errorHandle"
+        v-model="name"
+        name="username"
+        id="username"
+        required
+      />
+      <p class="error-text" v-if="errorname">Không vượt quá 100 kí tự</p>
     </div>
     <div class="date-valid">
       <div class="valid-groups">
@@ -32,7 +42,7 @@
     <div class="position-valid">
       <p class="text">Vị trí làm việc</p>
       <p class="text-ms">Có thể chọn nhiều vị trí mà bạn muốn làm việc.</p>
-      <input class="position-input" />
+      <div class="auto-input"><Autocomplete /></div>
     </div>
     <div class="introduc-valid">
       <p class="text">Mô tả về bản thân</p>
@@ -41,11 +51,14 @@
         class="text-area"
         @keyup="charCount"
         v-model="message"
+        :class="{ error: error }"
       ></textarea>
-      <p>{{ this.char }}/1000</p>
+      <p :class="{ 'error-text': error }">{{ this.char }}/1000</p>
+      <p class="error-text" v-if="error">Vượt quá độ dài qui định</p>
     </div>
     <div class="image-valid">
       <p class="text">Ảnh cá nhân</p>
+      <DropZone />
     </div>
   </div>
 </template>
@@ -53,16 +66,21 @@
 <script>
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+import Autocomplete from "@/components/autocompleted/Autocomplete.vue";
+import DropZone from "@/components/dropzone/DropZone.vue";
 export default {
   data() {
     return {
       time: null,
+      charac: 0,
+      name: "",
       message: "",
-      limit: 1000,
       char: 0,
+      error: false,
+      errorname: false,
     };
   },
-  components: { DatePicker },
+  components: { DatePicker, Autocomplete, DropZone },
   methods: {
     disableAfterToday(date) {
       const today = new Date();
@@ -70,6 +88,12 @@ export default {
     },
     charCount() {
       this.char = this.message.length;
+      this.char > 1000 ? (this.error = true) : (this.error = false);
+    },
+    errorHandle() {
+      this.name.length > 100
+        ? (this.errorname = true)
+        : (this.errorname = false);
     },
   },
   computed: {},
@@ -87,6 +111,7 @@ export default {
   gap: 10px;
   background: #ffffff;
   border: 1px solid #dcdcdc;
+  position: relative;
   border-radius: 4px;
   .name-valid {
     width: 528px;
@@ -142,17 +167,9 @@ export default {
   border: 1px solid #dbdbdb;
   border-radius: 4px;
 }
-.position-input {
-  padding: 16px 10px;
-  gap: 8px;
 
-  width: 528px;
-  height: 40px;
-
-  /* Gray2/Gray06 (旧Gray03) */
-
-  border: 1px solid #dcdcdc;
-  border-radius: 4px;
+.auto-input {
+  height: 50px;
 }
 .text-area {
   padding: 8px 10px;
@@ -166,5 +183,13 @@ export default {
   border: 1px solid #dcdcdc;
   border-radius: 4px;
   resize: none;
+}
+.error {
+  border: 1px solid #ed5d5d !important;
+}
+
+.error-text {
+  color: #ed5d5d;
+  font-size: 14px;
 }
 </style>

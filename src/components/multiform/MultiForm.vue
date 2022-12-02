@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h3 class="title">Don ung tuyen</h3>
+    <h3 class="title">Đơn ứng tuyển</h3>
     <div class="steps">
       <div class="step" v-for="step in steps" :key="step.id">
         <p
@@ -15,12 +15,21 @@
     </div>
     <FormRecruit v-if="activePhase === 1" />
     <FormExp v-if="activePhase === 2" />
+    <FormCompe v-if="activePhase === 3" />
+    <div class="btn-group">
+      <button class="btn-complete" v-if="activePhase === 3">Hoàn Thành</button>
+      <button class="btn" v-if="activePhase === 1 || activePhase === 2">
+        Tiếp
+      </button>
+      <button class="btn-primary" v-if="activePhase === 2">Quay lại</button>
+    </div>
   </div>
 </template>
 
 <script>
 import FormRecruit from "./FormRecruit.vue";
 import FormExp from "./FormExp.vue";
+import FormCompe from "./FormCompe.vue";
 export default {
   data() {
     return {
@@ -30,9 +39,20 @@ export default {
         { id: 3, name: "Xác nhận thông tin", active: false, disable: true },
       ],
       activePhase: 2,
+      user: {
+        name: "",
+        born: "",
+        city: "",
+        jobposition: [],
+        description: "",
+        img: "",
+        oldcompany: [{ name: "", position: "", timework: "", description: "" }],
+        reason: "",
+        salary: 0,
+      },
     };
   },
-  components: { FormRecruit, FormExp },
+  components: { FormRecruit, FormExp, FormCompe },
 };
 </script>
 
@@ -93,6 +113,48 @@ export default {
         line-height: 24px;
         text-align: center;
       }
+    }
+  }
+  .btn-group {
+    .btn {
+      margin-top: 10px;
+      width: 102px;
+      height: 40px;
+      background: #627d98;
+      border-radius: 3px;
+      border: none;
+      font-size: 16px;
+      line-height: 24px;
+      color: #fff;
+      cursor: pointer;
+    }
+    .btn-primary {
+      margin-top: 10px;
+      width: 102px;
+      height: 40px;
+      background: #fff;
+      border-radius: 3px;
+      border: 1px solid #dcdcdc;
+      font-size: 16px;
+      line-height: 24px;
+      color: #333;
+      cursor: pointer;
+      margin-left: 20px;
+    }
+    .btn-complete {
+      width: 142px;
+      height: 40px;
+      width: 142px;
+      height: 40px;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 24px;
+      cursor: pointer;
+      border: none;
+      color: #ffffff;
+      background: #dcdcdc;
+      border-radius: 3px;
+      margin-top: 10px;
     }
   }
 }
