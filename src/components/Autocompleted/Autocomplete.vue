@@ -2,7 +2,7 @@
   <div class="autocomplete">
     <label for="focus">
       <div class="popover">
-        <div class="search-bar" @focusout="closeDropdown" tabindex="0">
+        <div class="search-bar">
           <button class="search-icon">
             <font-awesome-icon icon="search" />
           </button>
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     closeDropdown() {
-      this.open = false;
+      this.searchQuery = "";
     },
     openDropdown() {
       this.open = true;
