@@ -2,8 +2,8 @@
   <div>
     <div class="container">
       <div
-        @dragenter.prevent="OnDragEnter"
-        @dragleave.prevent="OnDragLeave"
+        @dragenter.prevent="onDragEnter"
+        @dragleave.prevent="onDragLeave"
         @dragover.prevent
         @drop.prevent="onDrop"
         :class="{ 'active-drop': active, 'drop-error': errors }"
@@ -26,10 +26,10 @@
         @change="onInputChange"
         id="dropzoneFile"
       /> -->
-      <div v-if="errors" class="text-error">The maximum file size is 10MB</div>
+      <div v-if="errors" class="text-error">{{ this.messages }}</div>
       <div class="files-group">
         <FileItem
-          v-for="(file, index) in this.files"
+          v-for="(file, index) in this.filesList"
           :key="index"
           :file="file"
           @onRemove="onRemove(index)"
@@ -42,6 +42,8 @@
 
 <script>
 import FileItem from "./FileItem.vue";
+// import { FILE_TYPE } from "@/constants/index";
+import { getFileType, validateDuplicate } from "@/utils/validate";
 
 export default {
   data() {
@@ -49,26 +51,23 @@ export default {
       dropzoneFile: "",
       active: false,
       // filesList: [],
-      // error: false,
+      errors: false,
+      filesList: [],
+      messages: "",
     };
   },
   props: {
-    errors: {
-      type: Boolean,
-      default: false,
-    },
-    files: {
-      type: Array,
-      default: () => [],
+    maxsize: {
+      type: Number,
     },
   },
   components: { FileItem },
   methods: {
-    OnDragEnter(e) {
+    onDragEnter(e) {
       e.preventDefault();
       this.active = true;
     },
-    OnDragLeave(e) {
+    onDragLeave(e) {
       e.preventDefault();
       this.active = false;
     },
@@ -76,16 +75,48 @@ export default {
       e.preventDefault();
       e.stopPropagation();
       this.active = false;
-      this.$emit("onDrop", e.dataTransfer.files);
+      Array.from(e.dataTransfer.files).forEach((file) => {
+        if (validateDuplicate(file, this.filesList)) {
+          this.errors = true;
+          this.messages = "File is already existed";
+        } else if (file.size > this.maxsize) {
+          this.errors = true;
+          this.messages = "The maximum file size is 10MB";
+        } else {
+          this.messages = "";
+          this.errors = false;
+          this.filesList.push(file);
+          Array.from(this.filesList).forEach((file) => {
+            file.extType = getFileType(file.name);
+          });
+        }
+      });
     },
     onInputChange(e) {
-      this.$emit("onInputChange", e.target.files);
+      Array.from(e.target.files).forEach((file) => {
+        if (validateDuplicate(file, this.filesList)) {
+          this.errors = true;
+          this.messages = "File is already existed";
+        } else if (file.size > this.maxsize) {
+          this.errors = true;
+          this.messages = "The maximum file size is 10MB";
+        } else {
+          this.messages = "";
+          this.errors = false;
+          this.filesList.push(file);
+          Array.from(this.filesList).forEach((file) => {
+            file.extType = getFileType(file.name);
+          });
+        }
+      });
     },
     onRemove(index) {
-      this.$emit("onRemove", index);
+      this.filesList.splice(index, 1);
     },
     uploadFiles() {
-      this.$emit("uploadFiles");
+      this.$emit("uploadFiles", this.filesList);
+      this.filesList = [];
+      this.errors = false;
     },
   },
 };

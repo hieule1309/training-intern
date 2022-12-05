@@ -1,5 +1,5 @@
 <template>
-  <div class="file-item" v-if="this.file.size < 10000000">
+  <div class="file-item">
     <img
       class="file-img"
       v-if="file.extType === FILE_TYPE.EXCEL"
@@ -22,7 +22,7 @@
     />
 
     <div class="file-content">
-      <p class="file-name">{{ truncateString(file.name, 30) }}</p>
+      <p class="file-name">{{ file.name }}</p>
       <p class="file-size">{{ niceBytes(file.size) }}</p>
     </div>
     <font-awesome-icon class="close" icon="close" @click="onRemove" />
@@ -52,13 +52,6 @@ export default {
     onRemove(file) {
       this.$emit("onRemove", file);
     },
-    truncateString(str, num) {
-      if (str.length > num) {
-        return str.slice(0, num) + "...";
-      } else {
-        return str;
-      }
-    },
   },
 };
 </script>
@@ -81,11 +74,14 @@ export default {
   }
   .file-content {
     margin-left: 4px;
-    overflow: hidden;
+
     .file-name {
       color: #333333;
       font-size: 12px;
       line-height: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 170px;
     }
     .file-size {
       color: #666666;
