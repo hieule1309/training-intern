@@ -9,11 +9,13 @@
 import Dropzone from "./dropzone/DropZone.vue";
 import app from "../configs/firebase";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import toBytes from "@/utils/convert";
+import { MAX_SIZE } from "@/constants/index";
 
 export default {
   data() {
     return {
-      maxSize: 10485760,
+      maxSize: toBytes(MAX_SIZE, "MB"),
     };
   },
   components: { Dropzone },

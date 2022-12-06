@@ -30,7 +30,6 @@
 </template>
 
 <script>
-// import { niceBytes } from "../../utils/bytesToKb";
 import { FILE_TYPE } from "@/constants/index";
 export default {
   data() {

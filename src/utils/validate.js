@@ -1,4 +1,4 @@
-import { FILE_TYPE } from "@/constants/index";
+import { FILE_TYPE, MAX_FILES, LIMIT_FILES } from "@/constants/index";
 
 export function getFileType(name) {
   const pdf = new RegExp("([a-zA-Z0-9s_\\.-:])+(.pdf)$");
@@ -15,12 +15,15 @@ export function getFileType(name) {
   }
 }
 export function validateDuplicate(file, fileList) {
-  var result = false;
-  let list = fileList.filter((f) => {
-    return !f.name.includes(file.name);
+  var result = fileList.some((f) => {
+    return f.name === file.name;
   });
-  if (list.length === fileList.length) {
-    result = false;
-  } else result = true;
   return result;
+}
+export function maxFilesUpload(files) {
+  return files.length <= MAX_FILES;
+}
+export function limitFileType(name) {
+  let ext = name.split(".").pop().toLowerCase();
+  return LIMIT_FILES.some((f) => f === ext);
 }

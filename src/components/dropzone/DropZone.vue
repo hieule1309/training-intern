@@ -2,10 +2,10 @@
   <div>
     <div class="container">
       <div
-        @dragenter.prevent="onDragEnter"
-        @dragleave.prevent="onDragLeave"
+        @dragenter="onDragEnter"
+        @dragleave="onDragLeave"
         @dragover.prevent
-        @drop.prevent="onDrop"
+        @drop="onDrop"
         :class="{ 'active-drop': active, 'drop-error': errors }"
         class="drop-zone"
       >
@@ -18,14 +18,10 @@
           @change="onInputChange"
           id="dropzoneFile"
           multiple
+          ref="file"
         />
       </div>
-      <!-- <input
-        class="dropzone-file"
-        type="file"
-        @change="onInputChange"
-        id="dropzoneFile"
-      /> -->
+
       <div v-if="errors" class="text-error">{{ this.messages }}</div>
       <div class="files-group">
         <FileItem
@@ -42,15 +38,21 @@
 
 <script>
 import FileItem from "./FileItem.vue";
-// import { FILE_TYPE } from "@/constants/index";
-import { getFileType, validateDuplicate } from "@/utils/validate";
+
+import {
+  getFileType,
+  validateDuplicate,
+  maxFilesUpload,
+  limitFileType,
+} from "@/utils/validate";
+import { MAX_SIZE, MAX_FILES } from "@/constants/index";
 
 export default {
   data() {
     return {
       dropzoneFile: "",
       active: false,
-      // filesList: [],
+
       errors: false,
       filesList: [],
       messages: "",
@@ -75,40 +77,35 @@ export default {
       e.preventDefault();
       e.stopPropagation();
       this.active = false;
-      Array.from(e.dataTransfer.files).forEach((file) => {
-        if (validateDuplicate(file, this.filesList)) {
-          this.errors = true;
-          this.messages = "File is already existed";
-        } else if (file.size > this.maxsize) {
-          this.errors = true;
-          this.messages = "The maximum file size is 10MB";
-        } else {
-          this.messages = "";
-          this.errors = false;
-          this.filesList.push(file);
-          Array.from(this.filesList).forEach((file) => {
-            file.extType = getFileType(file.name);
-          });
-        }
-      });
+      this.$refs.file.files = e.dataTransfer.files;
+      this.onInputChange();
     },
-    onInputChange(e) {
-      Array.from(e.target.files).forEach((file) => {
-        if (validateDuplicate(file, this.filesList)) {
-          this.errors = true;
-          this.messages = "File is already existed";
-        } else if (file.size > this.maxsize) {
-          this.errors = true;
-          this.messages = "The maximum file size is 10MB";
-        } else {
-          this.messages = "";
-          this.errors = false;
-          this.filesList.push(file);
-          Array.from(this.filesList).forEach((file) => {
-            file.extType = getFileType(file.name);
-          });
-        }
-      });
+    onInputChange() {
+      const uploadFiles = [...this.$refs.file.files];
+      if (maxFilesUpload(uploadFiles)) {
+        uploadFiles.forEach((file) => {
+          if (validateDuplicate(file, this.filesList)) {
+            this.errors = true;
+            this.messages = "File is already existed";
+          } else if (file.size > this.maxsize) {
+            this.errors = true;
+            this.messages = `The maximum file size is ${MAX_SIZE}MB`;
+          } else if (!limitFileType(file.name)) {
+            this.errors = true;
+            this.messages = "File type is not allowed to upload";
+          } else {
+            this.messages = "";
+            this.errors = false;
+            this.filesList.push(file);
+            Array.from(this.filesList).forEach((file) => {
+              file.extType = getFileType(file.name);
+            });
+          }
+        });
+      } else {
+        this.errors = true;
+        this.messages = `You can only upload maximum ${MAX_FILES} files`;
+      }
     },
     onRemove(index) {
       this.filesList.splice(index, 1);
