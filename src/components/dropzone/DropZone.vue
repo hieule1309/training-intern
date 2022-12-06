@@ -23,6 +23,7 @@
       </div>
 
       <div v-if="errors" class="text-error">{{ this.messages }}</div>
+      <div v-if="success" class="text-success">{{ this.messages }}</div>
       <div class="files-group">
         <FileItem
           v-for="(file, index) in this.filesList"
@@ -44,15 +45,16 @@ import {
   validateDuplicate,
   maxFilesUpload,
   limitFileType,
+  filesMaxLength,
 } from "@/utils/validate";
-import { MAX_SIZE, MAX_FILES } from "@/constants/index";
+import { MAX_SIZE_MB } from "@/constants/index";
 
 export default {
   data() {
     return {
       dropzoneFile: "",
       active: false,
-
+      success: false,
       errors: false,
       filesList: [],
       messages: "",
@@ -61,6 +63,15 @@ export default {
   props: {
     maxsize: {
       type: Number,
+    },
+    maxFilesUpload: {
+      type: Number,
+    },
+    maxFileLength: {
+      type: Number,
+    },
+    limitFiles: {
+      type: Array,
     },
   },
   components: { FileItem },
@@ -82,38 +93,50 @@ export default {
     },
     onInputChange() {
       const uploadFiles = [...this.$refs.file.files];
-      if (maxFilesUpload(uploadFiles)) {
+      if (maxFilesUpload(uploadFiles, this.maxFilesUpload)) {
         uploadFiles.forEach((file) => {
           if (validateDuplicate(file, this.filesList)) {
             this.errors = true;
             this.messages = "File is already existed";
           } else if (file.size > this.maxsize) {
             this.errors = true;
-            this.messages = `The maximum file size is ${MAX_SIZE}MB`;
-          } else if (!limitFileType(file.name)) {
+            this.messages = `The maximum file size is ${MAX_SIZE_MB}MB`;
+          } else if (!limitFileType(file.name, this.limitFiles)) {
             this.errors = true;
             this.messages = "File type is not allowed to upload";
           } else {
             this.messages = "";
             this.errors = false;
-            this.filesList.push(file);
-            Array.from(this.filesList).forEach((file) => {
-              file.extType = getFileType(file.name);
-            });
+            // this.filesList.push(file);
+            // Array.from(this.filesList).forEach((file) => {
+            //   file.extType = getFileType(file.name);
+            // });
+            if (filesMaxLength(this.filesList, this.maxFileLength)) {
+              this.filesList.push(file);
+              Array.from(this.filesList).forEach((file) => {
+                file.extType = getFileType(file.name);
+              });
+            } else {
+              this.errors = true;
+              this.messages = `You can only upload maximum ${this.maxFileLength} files`;
+            }
           }
         });
       } else {
         this.errors = true;
-        this.messages = `You can only upload maximum ${MAX_FILES} files`;
+        this.messages = `You can only selected maximum ${this.maxFilesUpload} files`;
       }
     },
     onRemove(index) {
+      this.errors = false;
       this.filesList.splice(index, 1);
     },
     uploadFiles() {
       this.$emit("uploadFiles", this.filesList);
       this.filesList = [];
       this.errors = false;
+      this.success = true;
+      this.messages = "Success to upload";
     },
   },
 };
@@ -167,6 +190,9 @@ export default {
 }
 .text-error {
   color: red;
+}
+.text-success {
+  color: rgb(11, 177, 11);
 }
 .files-group {
   margin-top: 16px;

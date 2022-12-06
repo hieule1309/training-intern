@@ -4,8 +4,9 @@ export const FILE_TYPE = {
   PDF: 3,
   UNKNOW: 4,
 };
-export const MAX_SIZE = 10;
+export const MAX_SIZE_MB = 10;
 export const MAX_FILES = 3;
+export const FILES_LENGTH = 4;
 export const LIMIT_FILES = [
   "xls",
   "xlsx",

@@ -1,7 +1,14 @@
 <template>
   <div>
     <h2>Dropzone Page</h2>
-    <Dropzone ref="ref" @uploadFiles="uploadFiles" :maxsize="maxSize" />
+    <Dropzone
+      ref="ref"
+      @uploadFiles="uploadFiles"
+      :maxsize="maxSize"
+      :maxFilesUpload="maxFilesUpload"
+      :maxFileLength="maxFileLength"
+      :limitFiles="limitFiles"
+    />
   </div>
 </template>
 
@@ -10,12 +17,20 @@ import Dropzone from "./dropzone/DropZone.vue";
 import app from "../configs/firebase";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import toBytes from "@/utils/convert";
-import { MAX_SIZE } from "@/constants/index";
+import {
+  MAX_SIZE_MB,
+  FILES_LENGTH,
+  LIMIT_FILES,
+  MAX_FILES,
+} from "@/constants/index";
 
 export default {
   data() {
     return {
-      maxSize: toBytes(MAX_SIZE, "MB"),
+      maxSize: toBytes(MAX_SIZE_MB, "MB"),
+      maxFilesUpload: MAX_FILES,
+      maxFileLength: FILES_LENGTH,
+      limitFiles: LIMIT_FILES,
     };
   },
   components: { Dropzone },
