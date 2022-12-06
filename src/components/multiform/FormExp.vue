@@ -16,6 +16,9 @@ export default {
       count: 1,
     };
   },
+  props: {
+    formValues: [{ id: Number, company: String }],
+  },
   components: { WorkExp },
   methods: {
     add() {

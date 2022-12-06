@@ -1,11 +1,7 @@
 <template>
   <div class="container">
     <div class="selecte-company">
-      <select name="company" id="company" class="selected">
-        <option value="mor">MOR</option>
-        <option value="vng">VNG</option>
-        <option value="viettel">Viettel</option>
-      </select>
+      <input value="MOR" type="text" class="selected" />
       <img class="trash-img" src="@/assets/Trash.png" @click="remove" />
     </div>
     <div class="valid-position">

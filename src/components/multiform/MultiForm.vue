@@ -3,25 +3,38 @@
     <h3 class="title">Đơn ứng tuyển</h3>
     <div class="steps">
       <div class="step" v-for="step in steps" :key="step.id">
-        <p
-          class="step-tag"
-          :class="{ active: step.active, disable: step.disable }"
-        >
-          {{ step.id }}
+        <p class="step-tag" :class="{ active: step.id === activePhase }">
+          {{ step.stt }}
         </p>
         <p class="step-text">{{ step.name }}</p>
       </div>
       <div class="line"></div>
     </div>
-    <FormRecruit v-if="activePhase === 1" />
-    <FormExp v-if="activePhase === 2" />
-    <FormCompe v-if="activePhase === 3" />
+    <!-- <FormRecruit v-if="activePhase === 0" />
+    <FormExp v-if="activePhase === 1" />
+    <FormCompe v-if="activePhase === 2" /> -->
+    <KeepAlive
+      ><component
+        :is="forms[activePhase].component"
+        :formValues="formValues[forms[activePhase].label]"
+        @formValuesChange="updateForm"
+    /></KeepAlive>
     <div class="btn-group">
-      <button class="btn-complete" v-if="activePhase === 3">Hoàn Thành</button>
-      <button class="btn" v-if="activePhase === 1 || activePhase === 2">
+      <button class="btn-complete" v-if="activePhase === 2">Hoàn Thành</button>
+      <button
+        class="btn"
+        @click="nextClick"
+        v-if="activePhase === 0 || activePhase === 1"
+      >
         Tiếp
       </button>
-      <button class="btn-primary" v-if="activePhase === 2">Quay lại</button>
+      <button
+        class="btn-primary"
+        @click="backClick"
+        v-if="activePhase === 1 || activePhase === 2"
+      >
+        Quay lại
+      </button>
     </div>
   </div>
 </template>
@@ -34,25 +47,63 @@ export default {
   data() {
     return {
       steps: [
-        { id: 1, name: "Thông tin cá nhân", active: true },
-        { id: 2, name: "Kinh nghiệm làm việc", active: false, disable: true },
-        { id: 3, name: "Xác nhận thông tin", active: false, disable: true },
+        { id: 0, stt: 1, name: "Thông tin cá nhân", active: true },
+        { id: 1, stt: 2, name: "Kinh nghiệm làm việc", active: false },
+        { id: 2, stt: 3, name: "Xác nhận thông tin", active: false },
       ],
-      activePhase: 2,
-      user: {
-        name: "",
-        born: "",
-        city: "",
-        jobposition: [],
-        description: "",
-        img: "",
-        oldcompany: [{ name: "", position: "", timework: "", description: "" }],
-        reason: "",
-        salary: 0,
+      forms: [
+        {
+          component: FormRecruit,
+          label: "recruit",
+        },
+        {
+          component: FormExp,
+          label: "expWorks",
+        },
+        { component: FormCompe, label: "confirm" },
+      ],
+      activePhase: 0,
+      formValues: {
+        recruit: {
+          name: "",
+          date: "",
+          city: "",
+          position: [],
+          description: "",
+          img: "",
+        },
+        expWorks: [
+          {
+            id: 1,
+            company: "MOR",
+            position: "Software engineer",
+            startTime: "2003/12/02",
+            endTime: "2005/08/01",
+            description: "sss",
+          },
+        ],
+        confirm: {
+          reason: "",
+          salary: "",
+        },
       },
     };
   },
   components: { FormRecruit, FormExp, FormCompe },
+  methods: {
+    nextClick() {
+      this.activePhase += 1;
+    },
+    backClick() {
+      this.activePhase -= 1;
+    },
+    updateForm(payload) {
+      this.formValues = {
+        ...this.formValues,
+        [payload.label]: payload.data,
+      };
+    },
+  },
 };
 </script>
 
@@ -89,14 +140,12 @@ export default {
       justify-content: space-between;
       margin-left: 95px;
       z-index: 2;
-      .disable {
-        background-color: #dbdbdb !important;
-      }
+
       .step-tag {
         padding: 6px 12px;
         width: 32px;
         height: 32px;
-        background: #617d98;
+        background: #dbdbdb;
         border-radius: 90px;
         font-size: 14px;
         line-height: 21px;
@@ -106,6 +155,7 @@ export default {
         width: 40px;
         height: 40px;
         line-height: 30px;
+        background: #617d98;
       }
       .step-text {
         color: #333333;
