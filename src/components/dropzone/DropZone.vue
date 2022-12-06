@@ -52,7 +52,6 @@ import { MAX_SIZE_MB } from "@/constants/index";
 export default {
   data() {
     return {
-      dropzoneFile: "",
       active: false,
       success: false,
       errors: false,
@@ -63,15 +62,19 @@ export default {
   props: {
     maxsize: {
       type: Number,
+      required: false,
     },
     maxFilesUpload: {
       type: Number,
+      required: false,
     },
     maxFileLength: {
       type: Number,
+      required: false,
     },
     limitFiles: {
       type: Array,
+      required: false,
     },
   },
   components: { FileItem },
@@ -93,39 +96,76 @@ export default {
     },
     onInputChange() {
       const uploadFiles = [...this.$refs.file.files];
-      if (maxFilesUpload(uploadFiles, this.maxFilesUpload)) {
-        uploadFiles.forEach((file) => {
-          if (validateDuplicate(file, this.filesList)) {
-            this.errors = true;
-            this.messages = "File is already existed";
-          } else if (file.size > this.maxsize) {
-            this.errors = true;
-            this.messages = `The maximum file size is ${MAX_SIZE_MB}MB`;
-          } else if (!limitFileType(file.name, this.limitFiles)) {
-            this.errors = true;
-            this.messages = "File type is not allowed to upload";
-          } else {
-            this.messages = "";
-            this.errors = false;
-            // this.filesList.push(file);
-            // Array.from(this.filesList).forEach((file) => {
-            //   file.extType = getFileType(file.name);
-            // });
-            if (filesMaxLength(this.filesList, this.maxFileLength)) {
-              this.filesList.push(file);
-              Array.from(this.filesList).forEach((file) => {
-                file.extType = getFileType(file.name);
-              });
-            } else {
-              this.errors = true;
-              this.messages = `You can only upload maximum ${this.maxFileLength} files`;
-            }
-          }
-        });
-      } else {
-        this.errors = true;
-        this.messages = `You can only selected maximum ${this.maxFilesUpload} files`;
-      }
+      // if (
+      //   this.maxFilesUpload &&
+      //   maxFilesUpload(uploadFiles, this.maxFilesUpload)
+      // ) {
+      //   uploadFiles.forEach((file) => {
+      //     if (validateDuplicate(file, this.filesList)) {
+      //       this.errors = true;
+      //       this.messages = "File is already existed";
+      //     } else if (this.maxsize && file.size > this.maxsize) {
+      //       this.errors = true;
+      //       this.messages = `The maximum file size is ${MAX_SIZE_MB}MB`;
+      //     } else if (
+      //       this.limitFiles &&
+      //       !limitFileType(file.name, this.limitFiles)
+      //     ) {
+      //       this.errors = true;
+      //       this.messages = "File type is not allowed to upload";
+      //     } else if (
+      //       this.maxFileLength &&
+      //       !filesMaxLength(this.filesList, this.maxFileLength)
+      //     ) {
+      //       this.errors = true;
+      //       this.messages = `You can only upload maximum ${this.maxFileLength} files`;
+      //     } else {
+      //       this.messages = "";
+      //       this.errors = false;
+      //       this.filesList.push(file);
+      //       Array.from(this.filesList).forEach((file) => {
+      //         file.extType = getFileType(file.name);
+      //       });
+      //     }
+      //   });
+      // } else {
+      //   this.errors = true;
+      //   this.messages = `You can only selected maximum ${this.maxFilesUpload} files`;
+      // }
+      uploadFiles.forEach((file) => {
+        if (validateDuplicate(file, this.filesList)) {
+          this.errors = true;
+          this.messages = "File is already existed";
+        } else if (this.maxsize && file.size > this.maxsize) {
+          this.errors = true;
+          this.messages = `The maximum file size is ${MAX_SIZE_MB}MB`;
+        } else if (
+          this.limitFiles &&
+          !limitFileType(file.name, this.limitFiles)
+        ) {
+          this.errors = true;
+          this.messages = "File type is not allowed to upload";
+        } else if (
+          this.maxFileLength &&
+          !filesMaxLength(this.filesList, this.maxFileLength)
+        ) {
+          this.errors = true;
+          this.messages = `You can only upload maximum ${this.maxFileLength} files`;
+        } else if (
+          this.maxFilesUpload &&
+          !maxFilesUpload(uploadFiles, this.maxFilesUpload)
+        ) {
+          this.messages = `You can only selected maximum ${this.maxFilesUpload} files`;
+          this.errors = true;
+        } else {
+          this.messages = "";
+          this.errors = false;
+          this.filesList.push(file);
+          Array.from(this.filesList).forEach((file) => {
+            file.extType = getFileType(file.name);
+          });
+        }
+      });
     },
     onRemove(index) {
       this.errors = false;

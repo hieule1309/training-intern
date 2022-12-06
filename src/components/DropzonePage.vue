@@ -5,7 +5,6 @@
       ref="ref"
       @uploadFiles="uploadFiles"
       :maxsize="maxSize"
-      :maxFilesUpload="maxFilesUpload"
       :maxFileLength="maxFileLength"
       :limitFiles="limitFiles"
     />
