@@ -10,15 +10,15 @@
 
 <script>
 import WorkExp from "./WorkExp.vue";
+
 export default {
   data() {
     return {
       count: 1,
+      jobs: [],
     };
   },
-  props: {
-    formValues: [{ id: Number, company: String }],
-  },
+  props: {},
   components: { WorkExp },
   methods: {
     add() {

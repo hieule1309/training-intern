@@ -3,25 +3,25 @@ import axios from "axios";
 const autocompleteModule = {
   namespaced: true,
   state: {
-    provinces: [],
-    proviSelected: [],
+    items: [],
+    itemSelected: [],
   },
   getters: {
-    loadProvinces: (state) => state.provinces,
-    loadProviSelected: (state) => state.proviSelected,
+    loadItems: (state) => state.items,
+    loadItemSelected: (state) => state.itemSelected,
   },
   mutations: {
     SET_PROVICES(state, payload) {
-      state.provinces = payload;
+      state.items = payload;
     },
-    SELECTED_ITEM(state, province) {
-      state.proviSelected.push(province);
-      const idx = state.provinces.findIndex((p) => p.name == province.name);
-      state.provinces.splice(idx, 1);
+    SELECTED_ITEM(state, payload) {
+      state.itemSelected.push(payload);
+      const idx = state.items.findIndex((p) => p.name == payload.name);
+      state.items.splice(idx, 1);
     },
     DELETE_ITEM(state, payload) {
-      state.proviSelected.splice(payload.idx, 1);
-      state.provinces.push(payload.item);
+      state.itemSelected.splice(payload.idx, 1);
+      state.items.push(payload.item);
     },
   },
   actions: {

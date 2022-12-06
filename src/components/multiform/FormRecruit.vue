@@ -53,7 +53,13 @@
       <label class="text">Vị trí làm việc</label>
       <p class="text-ms">Có thể chọn nhiều vị trí mà bạn muốn làm việc.</p>
       <div class="auto-input">
-        <Autocomplete />
+        <Autocomplete
+          :items="this.position"
+          :itemSelected="this.positionSelected"
+          @selectedItem="selectedItem"
+          @deletedItem="deletedItem"
+          placeholder="Choose your position"
+        />
       </div>
     </div>
     <div class="introduc-valid">
@@ -95,18 +101,25 @@ export default {
       name: "",
       description: "",
       city: "",
-      position: ["FE Developer", "BE Developer", "Software Engineer"],
+      position: [
+        { name: "FE Developer" },
+        { name: "BE Developer" },
+        { name: "Software Engineer" },
+        { name: "AI Engineer" },
+        { name: "Embedded Software" },
+      ],
+      positionSelected: [],
     };
   },
   props: {
-    formValues: {
-      name: String,
-      date: String,
-      city: String,
-      position: Array,
-      description: String,
-      img: String,
-    },
+    // formValues: {
+    //   name: String,
+    //   date: String,
+    //   city: String,
+    //   position: Array,
+    //   description: String,
+    //   img: String,
+    // },
   },
   components: { DatePicker, Autocomplete, DropZone },
   methods: {
@@ -132,8 +145,18 @@ export default {
           date: this.time,
           city: this.city,
           description: this.description,
+          positionSelected: this.positionSelected,
         },
       });
+    },
+    selectedItem(data) {
+      this.positionSelected.push(data);
+      const idx = this.position.findIndex((p) => p.name == data.name);
+      this.position.splice(idx, 1);
+    },
+    deletedItem(data) {
+      this.positionSelected.splice(data.idx, 1);
+      this.position.push(data.item);
     },
   },
   computed: {},

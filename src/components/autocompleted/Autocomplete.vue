@@ -7,7 +7,7 @@
             <font-awesome-icon icon="search" />
           </button>
           <p
-            v-for="(item, index) in citiSelected"
+            v-for="(item, index) in itemSelected"
             :key="index"
             class="selected-item"
           >
@@ -53,11 +53,11 @@ export default {
     };
   },
   props: {
-    cities: {
+    items: {
       type: Array,
       default: () => [],
     },
-    citiSelected: {
+    itemSelected: {
       type: Array,
       default: () => [],
     },
@@ -84,7 +84,7 @@ export default {
       if (this.searchQuery === "") {
         return [];
       }
-      return this.cities.filter((item) => {
+      return this.items.filter((item) => {
         this.open = true;
         return Object.values(item).some((word) =>
           String(word).toLowerCase().includes(query)
@@ -98,6 +98,7 @@ export default {
 <style scoped>
 .autocomplete {
   width: 528px;
+  position: relative;
 }
 .search-bar {
   display: flex;

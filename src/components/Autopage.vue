@@ -2,8 +2,8 @@
   <div>
     <h1>Autocomplete</h1>
     <Autocomplete
-      :cities="loadProvinces"
-      :citiSelected="loadProviSelected"
+      :items="loadItems"
+      :itemSelected="loadItemSelected"
       :place="'Search province'"
       @selectedItem="selectedItem"
       @deletedItem="deletedItem"
@@ -30,7 +30,7 @@ export default {
     ]),
   },
   computed: {
-    ...mapGetters("autocompleteModule", ["loadProvinces", "loadProviSelected"]),
+    ...mapGetters("autocompleteModule", ["loadItems", "loadItemSelected"]),
   },
 };
 </script>
