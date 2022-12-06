@@ -95,6 +95,7 @@ export default {
       name: "",
       description: "",
       city: "",
+      position: ["FE Developer", "BE Developer", "Software Engineer"],
     };
   },
   props: {
