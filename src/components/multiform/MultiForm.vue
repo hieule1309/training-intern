@@ -13,18 +13,28 @@
     <!-- <FormRecruit v-if="activePhase === 0" />
     <FormExp v-if="activePhase === 1" />
     <FormCompe v-if="activePhase === 2" /> -->
-    <KeepAlive
-      ><component
-        :is="forms[activePhase].component"
-        :formValues="formValues[forms[activePhase].label]"
-        @formValuesChange="updateForm"
-    /></KeepAlive>
+
+    <component
+      :is="forms[activePhase].component"
+      @updateRecruit="updateRecruit"
+      @updateExpWorks="updateExpWorks"
+      @updateConfirm="updateConfirm"
+      @handleError="handleError"
+    />
     <div class="btn-group">
-      <button class="btn-complete" v-if="activePhase === 2">Hoàn Thành</button>
+      <button
+        class="btn"
+        :class="{ disabled: this.getError }"
+        v-if="activePhase === 2"
+        @click="submit"
+      >
+        Hoàn Thành
+      </button>
       <button
         class="btn"
         @click="nextClick"
         v-if="activePhase === 0 || activePhase === 1"
+        :class="{ disabled: this.getError }"
       >
         Tiếp
       </button>
@@ -43,6 +53,7 @@
 import FormRecruit from "./FormRecruit.vue";
 import FormExp from "./FormExp.vue";
 import FormCompe from "./FormCompe.vue";
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -63,46 +74,47 @@ export default {
         { component: FormCompe, label: "confirm" },
       ],
       activePhase: 0,
-      formValues: {
-        recruit: {
-          name: "",
-          date: "",
-          city: "",
-          position: [],
-          description: "",
-          img: "",
-        },
-        expWorks: [
-          {
-            id: 1,
-            company: "MOR",
-            position: "Software engineer",
-            startTime: "2003/12/02",
-            endTime: "2005/08/01",
-            description: "sss",
-          },
-        ],
-        confirm: {
-          reason: "",
-          salary: "",
-        },
-      },
     };
   },
   components: { FormRecruit, FormExp, FormCompe },
   methods: {
+    ...mapActions("formModules", [
+      "updateRecruit",
+      "updateExpWorks",
+      "updateConfirm",
+      "handleError",
+    ]),
     nextClick() {
-      this.activePhase += 1;
+      if (!this.getError) {
+        this.activePhase += 1;
+        this.handleError(true);
+      }
     },
     backClick() {
       this.activePhase -= 1;
+      this.handleError(true);
     },
-    updateForm(payload) {
-      this.formValues = {
-        ...this.formValues,
-        [payload.label]: payload.data,
-      };
+    submit() {
+      console.log("formValues", [
+        this.getRecruit,
+        this.getExpWorks,
+        this.getConfirm,
+      ]);
     },
+    // updateForms(payload) {
+    //   this.formValues = {
+    //     ...this.formValues,
+    //     [payload.label]: payload.data,
+    //   };
+    // },
+  },
+  computed: {
+    ...mapGetters("formModules", [
+      "getError",
+      "getRecruit",
+      "getExpWorks",
+      "getConfirm",
+    ]),
   },
 };
 </script>
@@ -191,20 +203,9 @@ export default {
       cursor: pointer;
       margin-left: 20px;
     }
-    .btn-complete {
-      width: 142px;
-      height: 40px;
-      width: 142px;
-      height: 40px;
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 24px;
-      cursor: pointer;
-      border: none;
+    .disabled {
       color: #ffffff;
       background: #dcdcdc;
-      border-radius: 3px;
-      margin-top: 10px;
     }
   }
 }

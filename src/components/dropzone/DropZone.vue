@@ -2,10 +2,10 @@
   <div>
     <div class="container">
       <div
-        @dragenter.prevent="OnDragEnter"
-        @dragleave.prevent="OnDragLeave"
+        @dragenter="onDragEnter"
+        @dragleave="onDragLeave"
         @dragover.prevent
-        @drop.prevent="onDrop"
+        @drop="onDrop"
         :class="{ 'active-drop': active, 'drop-error': errors }"
         class="drop-zone"
       >
@@ -18,56 +18,72 @@
           @change="onInputChange"
           id="dropzoneFile"
           multiple
+          ref="file"
         />
       </div>
-      <!-- <input
-        class="dropzone-file"
-        type="file"
-        @change="onInputChange"
-        id="dropzoneFile"
-      /> -->
-      <div v-if="errors" class="text-error">The maximum file size is 10MB</div>
+
+      <div v-if="errors" class="text-error">{{ this.messages }}</div>
+      <div v-if="success" class="text-success">{{ this.messages }}</div>
       <div class="files-group">
         <FileItem
-          v-for="(file, index) in this.files"
+          v-for="(file, index) in this.filesList"
           :key="index"
           :file="file"
           @onRemove="onRemove(index)"
         />
       </div>
-      <!-- <button class="btn" @click="uploadFiles">Submit</button> -->
+      <button class="btn" @click="uploadFiles">Submit</button>
     </div>
   </div>
 </template>
 
 <script>
 import FileItem from "./FileItem.vue";
+
+import {
+  getFileType,
+  validateDuplicate,
+  maxFilesUpload,
+  limitFileType,
+  filesMaxLength,
+} from "@/utils/validate";
+import { MAX_SIZE_MB } from "@/constants/index";
+
 export default {
   data() {
     return {
-      dropzoneFile: "",
       active: false,
-      // filesList: [],
-      // error: false,
+      success: false,
+      errors: false,
+      filesList: [],
+      messages: "",
     };
   },
   props: {
-    errors: {
-      type: Boolean,
-      default: false,
+    maxsize: {
+      type: Number,
+      required: false,
     },
-    files: {
+    maxFilesUpload: {
+      type: Number,
+      required: false,
+    },
+    maxFileLength: {
+      type: Number,
+      required: false,
+    },
+    limitFiles: {
       type: Array,
-      default: () => [],
+      required: false,
     },
   },
   components: { FileItem },
   methods: {
-    OnDragEnter(e) {
+    onDragEnter(e) {
       e.preventDefault();
       this.active = true;
     },
-    OnDragLeave(e) {
+    onDragLeave(e) {
       e.preventDefault();
       this.active = false;
     },
@@ -75,16 +91,92 @@ export default {
       e.preventDefault();
       e.stopPropagation();
       this.active = false;
-      this.$emit("onDrop", e.dataTransfer.files);
+      this.$refs.file.files = e.dataTransfer.files;
+      this.onInputChange();
     },
-    onInputChange(e) {
-      this.$emit("onInputChange", e.target.files);
+    onInputChange() {
+      const uploadFiles = [...this.$refs.file.files];
+      // if (
+      //   this.maxFilesUpload &&
+      //   maxFilesUpload(uploadFiles, this.maxFilesUpload)
+      // ) {
+      //   uploadFiles.forEach((file) => {
+      //     if (validateDuplicate(file, this.filesList)) {
+      //       this.errors = true;
+      //       this.messages = "File is already existed";
+      //     } else if (this.maxsize && file.size > this.maxsize) {
+      //       this.errors = true;
+      //       this.messages = `The maximum file size is ${MAX_SIZE_MB}MB`;
+      //     } else if (
+      //       this.limitFiles &&
+      //       !limitFileType(file.name, this.limitFiles)
+      //     ) {
+      //       this.errors = true;
+      //       this.messages = "File type is not allowed to upload";
+      //     } else if (
+      //       this.maxFileLength &&
+      //       !filesMaxLength(this.filesList, this.maxFileLength)
+      //     ) {
+      //       this.errors = true;
+      //       this.messages = `You can only upload maximum ${this.maxFileLength} files`;
+      //     } else {
+      //       this.messages = "";
+      //       this.errors = false;
+      //       this.filesList.push(file);
+      //       Array.from(this.filesList).forEach((file) => {
+      //         file.extType = getFileType(file.name);
+      //       });
+      //     }
+      //   });
+      // } else {
+      //   this.errors = true;
+      //   this.messages = `You can only selected maximum ${this.maxFilesUpload} files`;
+      // }
+      uploadFiles.forEach((file) => {
+        if (validateDuplicate(file, this.filesList)) {
+          this.errors = true;
+          this.messages = "File is already existed";
+        } else if (this.maxsize && file.size > this.maxsize) {
+          this.errors = true;
+          this.messages = `The maximum file size is ${MAX_SIZE_MB}MB`;
+        } else if (
+          this.limitFiles &&
+          !limitFileType(file.name, this.limitFiles)
+        ) {
+          this.errors = true;
+          this.messages = "File type is not allowed to upload";
+        } else if (
+          this.maxFileLength &&
+          !filesMaxLength(this.filesList, this.maxFileLength)
+        ) {
+          this.errors = true;
+          this.messages = `You can only upload maximum ${this.maxFileLength} files`;
+        } else if (
+          this.maxFilesUpload &&
+          !maxFilesUpload(uploadFiles, this.maxFilesUpload)
+        ) {
+          this.messages = `You can only selected maximum ${this.maxFilesUpload} files`;
+          this.errors = true;
+        } else {
+          this.messages = "";
+          this.errors = false;
+          this.filesList.push(file);
+          Array.from(this.filesList).forEach((file) => {
+            file.extType = getFileType(file.name);
+          });
+        }
+      });
     },
     onRemove(index) {
-      this.$emit("onRemove", index);
+      this.errors = false;
+      this.filesList.splice(index, 1);
     },
     uploadFiles() {
-      this.$emit("uploadFiles");
+      this.$emit("uploadFiles", this.filesList);
+      this.filesList = [];
+      this.errors = false;
+      this.success = true;
+      this.messages = "Success to upload";
     },
   },
 };
@@ -136,6 +228,9 @@ export default {
 }
 .text-error {
   color: red;
+}
+.text-success {
+  color: rgb(11, 177, 11);
 }
 .files-group {
   margin-top: 16px;

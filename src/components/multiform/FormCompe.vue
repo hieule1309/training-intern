@@ -1,49 +1,84 @@
 <template>
   <div class="container">
     <div class="reason-valid">
-      <div class="valid-groups">
+      <!-- <div class="valid-groups">
         <span class="must">Must</span>
         <label class="text">Lý do muốn ứng tuyển vào công ty</label>
-      </div>
-      <textarea
-        type="text"
-        class="text-area"
-        @keyup="charCount"
-        v-model="message"
-        :class="{ error: error }"
-        maxlength="1001"
-      ></textarea>
-      <p :class="{ 'error-text': error }">{{ this.char }}/1000</p>
-      <p class="error-text" v-if="error">Không vượt quá 1000 kí tự</p>
+      </div> -->
+      <TitleGroup :title="reason" />
+      <TextArenaInput
+        @getDescription="getDescription"
+        :maxLength="this.maxLength"
+      />
     </div>
     <div class="salary">
-      <div class="valid-groups">
+      <!-- <div class="valid-groups">
         <span class="must">Must</span>
         <label class="text">Mức lương mong muốn</label>
-      </div>
+      </div> -->
+      <TitleGroup :title="desiredSalary" />
       <div class="box">
-        <input type="number" class="box-salary" />
+        <input
+          type="number"
+          class="box-salary"
+          placeholder="Number"
+          v-model="salary"
+          @input="onChange"
+          @keyup="errorHandle"
+        />
         <span>VNĐ</span>
       </div>
+      <p class="error-text" v-if="error">Tối đa 10 chữ số</p>
     </div>
   </div>
 </template>
 
 <script>
+import TextArenaInput from "./TextArenaInput.vue";
+import TitleGroup from "./components/TitleGroup.vue";
+
 export default {
   data() {
     return {
-      message: "",
+      description: "",
+      maxLength: 1000,
+      salary: 0,
+      reason: "Lý do muốn ứng tuyển vào công ty",
+      desiredSalary: "Mức lương mong muốn",
       error: false,
-      char: 0,
+      required: true,
+      desError: false,
     };
   },
   methods: {
-    charCount() {
-      this.char = this.message.length;
-      this.char > 1000 ? (this.error = true) : (this.error = false);
+    errorHandle() {
+      if (this.salary.length > 10) {
+        this.error = true;
+      } else {
+        this.error = false;
+      }
+      if (this.salary && this.description && !this.desError) {
+        this.required = false;
+      } else {
+        this.required = true;
+      }
+
+      this.$emit("handleError", this.required);
+    },
+    getDescription(data) {
+      this.description = data.des;
+      this.desError = data.error;
+      this.onChange();
+      this.errorHandle();
+    },
+    onChange() {
+      this.$emit("updateConfirm", {
+        reason: this.description,
+        salary: this.salary,
+      });
     },
   },
+  components: { TextArenaInput, TitleGroup },
 };
 </script>
 
@@ -61,22 +96,7 @@ export default {
   background: #ffffff;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
-  .must {
-    padding: 2px 8px;
-    gap: 10px;
-    color: #ffffff;
-    width: 45px;
-    height: 20px;
-    font-size: 12px;
-    line-height: 20px;
-    background: #627d98;
-    border-radius: 3px;
-  }
-  .text {
-    font-size: 14px;
-    line-height: 20px;
-    margin-left: 4px;
-  }
+
   .text-area {
     padding: 8px 10px;
     width: 528px;

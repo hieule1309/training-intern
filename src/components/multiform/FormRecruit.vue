@@ -1,56 +1,55 @@
 <template>
   <div class="container">
     <div class="name-valid">
-      <div class="valid-groups">
+      <!-- <div class="valid-groups">
         <span class="must">Must</span>
         <label class="text" for="name">Họ và tên</label>
-      </div>
+      </div> -->
+      <TitleGroup :title="fullName" />
       <input
         type="text"
         class="valid-input"
         :class="{ error: errorname }"
-        @keyup="errorHandle"
         name="name"
         id="name"
         v-model="name"
         @input="onChange"
-        required
+        @keydown="errorHandle"
       />
       <p class="error-text" v-if="errorname">Không vượt quá 100 kí tự</p>
     </div>
     <div class="date-valid">
-      <div class="valid-groups">
-        <span class="must">Must</span>
-        <label class="text" for="date">Ngày sinh</label>
-      </div>
+      <TitleGroup :title="dob" />
       <DatePicker
         placeholder="0000/00/00"
         v-model="time"
-        title-format="0000/00/00"
+        value-type="format"
+        format="YYYY/MM/DD"
         class="date"
         :default-value="new Date()"
         :disabled-date="disableAfterToday"
         id="date"
-        @input="onChange"
+        @change="onChange"
+        :clearable="false"
       />
     </div>
     <div class="citi-valid">
-      <label class="text">Thành Phố</label>
-      <br />
+      <label class="block" for="citie">Thành Phố</label>
       <select
         name="citie"
         id="citie"
         v-model="city"
-        @input="onChange"
+        @change="onChange"
         class="cities"
       >
-        <option value="hanoi">Hà Nội</option>
-        <option value="tphcm">TP Hồ Chí Minh</option>
-        <option value="danang">Đà Nẵng</option>
+        <option disabled value="">Please select your city--</option>
+        <option>Hà Nội</option>
+        <option>TP Hồ Chí Minh</option>
+        <option>Đà Nẵng</option>
       </select>
     </div>
     <div class="position-valid">
-      <label class="text">Vị trí làm việc</label>
+      <label class="block">Vị trí làm việc</label>
       <p class="text-ms">Có thể chọn nhiều vị trí mà bạn muốn làm việc.</p>
       <div class="auto-input">
         <Autocomplete
@@ -59,28 +58,21 @@
           @selectedItem="selectedItem"
           @deletedItem="deletedItem"
           placeholder="Choose your position"
+          @input="onChange"
         />
       </div>
     </div>
     <div class="introduc-valid">
-      <label class="text" for="description">Mô tả về bản thân</label>
-      <br />
-      <textarea
-        type="text"
-        class="text-area"
-        @keyup="charCount"
-        name="description"
-        id="description"
-        :class="{ error: error }"
-        v-model="description"
+      <label class="block" for="description">Mô tả về bản thân</label>
+      <TextArenaInput
+        @getDescription="getDescription"
+        :maxLength="this.maxLength"
         @input="onChange"
-      ></textarea>
-      <p :class="{ 'error-text': error }">{{ this.char }}/1000</p>
-      <p class="error-text" v-if="error">Vượt quá độ dài qui định</p>
+      />
     </div>
     <div class="image-valid">
-      <label class="text">Ảnh cá nhân</label>
-      <DropZone />
+      <label class="block">Ảnh cá nhân</label>
+      <DropZone @change="onChange" @uploadFiles="uploadFiles" />
     </div>
   </div>
 </template>
@@ -90,17 +82,19 @@ import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import Autocomplete from "@/components/autocompleted/Autocomplete.vue";
 import DropZone from "@/components/dropzone/DropZone.vue";
+import TextArenaInput from "./TextArenaInput.vue";
+import TitleGroup from "./components/TitleGroup.vue";
+
 export default {
   data() {
     return {
-      time: null,
-      charac: 0,
-      char: 0,
-      error: false,
+      time: "",
       errorname: false,
       name: "",
       description: "",
       city: "",
+      img: null,
+      desErrors: false,
       position: [
         { name: "FE Developer" },
         { name: "BE Developer" },
@@ -109,6 +103,10 @@ export default {
         { name: "Embedded Software" },
       ],
       positionSelected: [],
+      maxLength: 1000,
+      fullName: "Họ và tên",
+      dob: "Ngày sinh",
+      required: true,
     };
   },
   props: {
@@ -121,33 +119,41 @@ export default {
     //   img: String,
     // },
   },
-  components: { DatePicker, Autocomplete, DropZone },
+  components: {
+    DatePicker,
+    Autocomplete,
+    DropZone,
+    TextArenaInput,
+    TitleGroup,
+  },
   methods: {
     disableAfterToday(date) {
       const today = new Date();
       return date > today;
-    },
-    charCount() {
-      this.char = this.description.length;
-      this.char > 1000 ? (this.error = true) : (this.error = false);
     },
     errorHandle() {
       this.name.length > 100
         ? (this.errorname = true)
         : (this.errorname = false);
     },
+    handleError() {
+      if (this.name && this.time && !this.errorname && !this.desErrors) {
+        this.required = false;
+      } else {
+        this.required = true;
+      }
+      this.$emit("handleError", this.required);
+    },
     onChange() {
-      this.$emit("formValuesChange", {
-        label: "recruit",
-        data: {
-          ...this.formValues,
-          name: this.name,
-          date: this.time,
-          city: this.city,
-          description: this.description,
-          positionSelected: this.positionSelected,
-        },
+      this.$emit("updateRecruit", {
+        name: this.name,
+        date: this.time,
+        city: this.city,
+        description: this.description,
+        positionSelected: this.positionSelected,
+        img: this.img,
       });
+      this.handleError();
     },
     selectedItem(data) {
       this.positionSelected.push(data);
@@ -157,6 +163,16 @@ export default {
     deletedItem(data) {
       this.positionSelected.splice(data.idx, 1);
       this.position.push(data.item);
+    },
+    getDescription(data) {
+      this.description = data.des;
+      this.desErrors = data.error;
+      this.onChange();
+    },
+    uploadFiles(data) {
+      this.img = data[0].name;
+
+      this.onChange();
     },
   },
   computed: {},
@@ -196,6 +212,9 @@ export default {
     line-height: 20px;
     margin-left: 4px;
   }
+  .block {
+    display: block;
+  }
   .text-ms {
     font-size: 12px;
     line-height: 20px;
@@ -213,7 +232,7 @@ export default {
 }
 .date {
   width: 118px;
-  height: 40px;
+  border-radius: 6px;
 }
 .cities {
   padding: 8px 10px;
@@ -233,6 +252,7 @@ export default {
 
 .auto-input {
   height: 50px;
+  width: 528px;
 }
 .text-area {
   padding: 8px 10px;

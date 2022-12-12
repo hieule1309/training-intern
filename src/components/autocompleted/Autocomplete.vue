@@ -97,7 +97,7 @@ export default {
 
 <style scoped>
 .autocomplete {
-  width: 528px;
+  width: 100%;
   position: relative;
 }
 .search-bar {

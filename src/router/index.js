@@ -5,7 +5,7 @@ import HelloWorld from "../components/HelloWorld.vue";
 import Todo from "../components/Todo.vue";
 import Autopage from "../components/Autopage";
 import DropzonePage from "../components/DropzonePage";
-import MultiFormPage from "../components/MultiFormPage";
+import MultiFormPage from "@/components/MultiFormPage";
 Vue.use(VueRouter);
 
 const routes = [
