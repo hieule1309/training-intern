@@ -58,9 +58,24 @@ export default {
   data() {
     return {
       steps: [
-        { id: 0, stt: 1, name: "Thông tin cá nhân", active: true },
-        { id: 1, stt: 2, name: "Kinh nghiệm làm việc", active: false },
-        { id: 2, stt: 3, name: "Xác nhận thông tin", active: false },
+        {
+          id: 0,
+          stt: 1,
+          name: "Thông tin cá nhân",
+          active: true,
+        },
+        {
+          id: 1,
+          stt: 2,
+          name: "Kinh nghiệm làm việc",
+          active: false,
+        },
+        {
+          id: 2,
+          stt: 3,
+          name: "Xác nhận thông tin",
+          active: false,
+        },
       ],
       forms: [
         {

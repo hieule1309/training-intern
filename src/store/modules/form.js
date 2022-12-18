@@ -14,6 +14,18 @@ const formModules = {
       reason: "",
       salary: "",
     },
+    formInfo: [
+      {
+        id: 1,
+        label: "Ho va ten",
+        name: "",
+        dob: "",
+        city: "",
+        position: [],
+        description: "",
+        img: "",
+      },
+    ],
     error: true,
   },
   getters: {

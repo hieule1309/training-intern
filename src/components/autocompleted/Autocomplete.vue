@@ -21,9 +21,10 @@
           <input
             type="text"
             v-model="searchQuery"
-            placeholder="Typing"
+            :placeholder="this.place"
             id="focus"
             autocomplete="off"
+            class="input"
             @focus="openDropdown"
           />
         </div>
@@ -60,6 +61,9 @@ export default {
     itemSelected: {
       type: Array,
       default: () => [],
+    },
+    place: {
+      type: String,
     },
   },
   methods: {
@@ -98,8 +102,9 @@ export default {
 <style scoped>
 .autocomplete {
   width: 100%;
-  position: relative;
+  display: block;
 }
+
 .search-bar {
   display: flex;
   flex-direction: row;
@@ -125,7 +130,7 @@ export default {
 .search-icon {
   width: 24px;
   height: 24px;
-  color: #333;
+  color: #dcdcdc;
   border: none;
   background-color: transparent;
   font-size: 20px;
@@ -153,7 +158,6 @@ export default {
 .popover input {
   font-size: 16px;
   border: none;
-  padding: 8px;
 }
 .option {
   max-height: 150px;

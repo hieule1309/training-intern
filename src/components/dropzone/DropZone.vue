@@ -32,7 +32,7 @@
           @onRemove="onRemove(index)"
         />
       </div>
-      <button class="btn" @click="uploadFiles">Submit</button>
+      <!-- <button class="btn" @click="uploadFiles">Submit</button> -->
     </div>
   </div>
 </template>
@@ -96,42 +96,6 @@ export default {
     },
     onInputChange() {
       const uploadFiles = [...this.$refs.file.files];
-      // if (
-      //   this.maxFilesUpload &&
-      //   maxFilesUpload(uploadFiles, this.maxFilesUpload)
-      // ) {
-      //   uploadFiles.forEach((file) => {
-      //     if (validateDuplicate(file, this.filesList)) {
-      //       this.errors = true;
-      //       this.messages = "File is already existed";
-      //     } else if (this.maxsize && file.size > this.maxsize) {
-      //       this.errors = true;
-      //       this.messages = `The maximum file size is ${MAX_SIZE_MB}MB`;
-      //     } else if (
-      //       this.limitFiles &&
-      //       !limitFileType(file.name, this.limitFiles)
-      //     ) {
-      //       this.errors = true;
-      //       this.messages = "File type is not allowed to upload";
-      //     } else if (
-      //       this.maxFileLength &&
-      //       !filesMaxLength(this.filesList, this.maxFileLength)
-      //     ) {
-      //       this.errors = true;
-      //       this.messages = `You can only upload maximum ${this.maxFileLength} files`;
-      //     } else {
-      //       this.messages = "";
-      //       this.errors = false;
-      //       this.filesList.push(file);
-      //       Array.from(this.filesList).forEach((file) => {
-      //         file.extType = getFileType(file.name);
-      //       });
-      //     }
-      //   });
-      // } else {
-      //   this.errors = true;
-      //   this.messages = `You can only selected maximum ${this.maxFilesUpload} files`;
-      // }
       uploadFiles.forEach((file) => {
         if (validateDuplicate(file, this.filesList)) {
           this.errors = true;
@@ -166,18 +130,19 @@ export default {
           });
         }
       });
+      this.$emit("uploadFiles", this.filesList);
     },
     onRemove(index) {
       this.errors = false;
       this.filesList.splice(index, 1);
     },
-    uploadFiles() {
-      this.$emit("uploadFiles", this.filesList);
-      this.filesList = [];
-      this.errors = false;
-      this.success = true;
-      this.messages = "Success to upload";
-    },
+    // uploadFiles() {
+    //   this.$emit("uploadFiles", this.filesList);
+    //   this.filesList = [];
+    //   this.errors = false;
+    //   this.success = true;
+    //   this.messages = "Success to upload";
+    // },
   },
 };
 </script>
