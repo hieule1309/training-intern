@@ -1,9 +1,7 @@
 <template>
   <div>
-    <div class="valid-groups">
-      <span class="must">Must</span>
-      <label class="text" for="name">{{ this.label }}</label>
-    </div>
+    <TitleGroup :title="this.label" v-if="this.required" />
+    <p v-else class="text">{{ this.label }}</p>
     <div>
       <input
         class="input"
@@ -21,6 +19,7 @@
 </template>
 
 <script>
+import TitleGroup from "./TitleGroup.vue";
 export default {
   data() {
     return {
@@ -28,7 +27,17 @@ export default {
       value: "",
     };
   },
-  props: ["label", "maxLength", "isNumber", "isCheck", "errorMessage", "id"],
+  props: [
+    "label",
+    "maxLength",
+    "isNumber",
+    "isCheck",
+    "errorMessage",
+    "id",
+    "required",
+    "stt",
+  ],
+  components: { TitleGroup },
   computed: {},
   methods: {
     errorHandle() {
@@ -38,8 +47,11 @@ export default {
       this.onChange();
     },
     onChange() {
-      this.$emit("updateInput", this.value, this.id);
+      this.$emit("updateInput", this.value, this.id, this.stt);
     },
+  },
+  mounted() {
+    console.log("Input");
   },
 };
 </script>

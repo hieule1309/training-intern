@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="title">{{ this.label }}</p>
+    <p class="title" v-if="this.label === 'Thành phố'">{{ this.label }}</p>
     <div :class="{ 'select-group': this.delete }">
       <select
         class="options"
@@ -39,9 +39,11 @@ export default {
     },
     deleteForm() {
       this.$emit("deleteForm", this.id);
-      console.log(this.id);
     },
   },
+  // mounted() {
+  //   console.log("selectdddd");
+  // },
 };
 </script>
 

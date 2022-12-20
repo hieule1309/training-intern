@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
-    <p class="title">{{ this.label }}</p>
+    <TitleGroup v-if="this.required" :title="this.label" />
+    <p class="title" v-else>{{ this.label }}</p>
     <textarea
       type="text"
       class="text-area"
@@ -18,6 +19,7 @@
 </template>
 
 <script>
+import TitleGroup from "./TitleGroup.vue";
 export default {
   data() {
     return {
@@ -26,7 +28,7 @@ export default {
       char: 0,
     };
   },
-  props: ["maxLength", "showCount", "label", "errorMessage", "id"],
+  props: ["maxLength", "showCount", "label", "errorMessage", "id", "required"],
   methods: {
     charCount() {
       this.char = this.description.length;
@@ -36,6 +38,10 @@ export default {
     onChange() {
       this.$emit("updateTextarena", this.description, this.id);
     },
+  },
+  components: { TitleGroup },
+  mounted() {
+    console.log("textarena mounted");
   },
 };
 </script>

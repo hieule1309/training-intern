@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="form-container">
+    <div class="form-container" :class="{ xlWidth: this.step === 1 }">
       <div v-for="(item, index) in form" :key="index">
-        <KeepAlive>
+        <keep-alive :max="10">
           <component
             :is="item.component"
             :label="item.label"
@@ -15,9 +15,11 @@
             :small="item.small"
             :optionsSelect="item.optionsSelect"
             :id="id"
+            :stt="item.stt"
             :isCheck="isCheck"
             :dateCheck="dateCheck"
             :errorMessage="item.errorMessage"
+            :required="item.required"
             @updateInput="updateInput"
             @updateDate="updateDate"
             @updateSelect="updateSelect"
@@ -28,7 +30,7 @@
             @updateSalary="updateSalary"
             class="component"
           ></component>
-        </KeepAlive>
+        </keep-alive>
       </div>
     </div>
   </div>
@@ -47,10 +49,10 @@ export default {
     return {};
   },
 
-  props: ["form", "id", "isCheck", "dateCheck"],
+  props: ["form", "id", "isCheck", "dateCheck", "step"],
   methods: {
-    updateInput(data, id) {
-      this.$emit("updateInput", data, id);
+    updateInput(data, id, index) {
+      this.$emit("updateInput", data, id, index);
     },
     updateDate(data, id) {
       this.$emit("updateDate", data, id);
@@ -88,12 +90,15 @@ export default {
 
 <style lang="scss" scoped>
 .form-container {
-  width: 1026px;
+  width: 926px;
   padding: 20px 32px 24px;
   background: #ffffff;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
   margin: 18px 0;
+}
+.xlWidth {
+  width: 1026px;
 }
 .component {
   margin-bottom: 4px;

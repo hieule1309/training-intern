@@ -44,6 +44,9 @@ export default {
       this.$emit("updateJob", this.positionSelected);
     },
   },
+  mounted() {
+    console.log("jobbbbbbb");
+  },
 };
 </script>
 

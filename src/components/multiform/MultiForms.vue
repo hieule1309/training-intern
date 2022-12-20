@@ -3,7 +3,13 @@
     <h3 class="title">Đơn ứng tuyển</h3>
     <div class="steps">
       <div class="step" v-for="step in steps" :key="step.id">
-        <p class="step-tag" :class="{ active: step.id === activePhase }">
+        <p
+          class="step-tag"
+          :class="{
+            active: step.id === activePhase,
+            pass: step.id < activePhase,
+          }"
+        >
           {{ step.stt }}
         </p>
         <p class="step-text">{{ step.name }}</p>
@@ -15,6 +21,7 @@
       :key="index"
       :form="field.data"
       :id="field.id"
+      :step="activePhase"
       @deleteForm="deleteForm"
       @updateInput="updateInput"
       @updateDate="updateDate"
@@ -84,6 +91,7 @@ export default {
               id: 1,
               data: [
                 {
+                  stt: idv4(),
                   component: "Input",
                   label: "Họ và tên",
                   name: "",
@@ -92,6 +100,7 @@ export default {
                   required: true,
                 },
                 {
+                  stt: idv4(),
                   component: "SelectDate",
                   label: "Ngày sinh",
                   birthday: "",
@@ -99,25 +108,33 @@ export default {
                   required: true,
                 },
                 {
+                  stt: idv4(),
                   component: "Select",
                   label: "Thành phố",
                   city: "",
                   options: ["Hà Nội", "Đà Nẵng", "TP Hồ Chí Minh"],
                 },
                 {
+                  stt: idv4(),
                   component: "JobSelect",
                   label: "Vị trí làm việc",
                   subTitle: "Có thể chọn nhiều vị trí mà bạn muốn làm việc",
                   positions: [],
                 },
                 {
+                  stt: idv4(),
                   component: "TextArenaInput",
                   label: "Mô tả về bản thân",
                   description: "",
                   maxLength: 1000,
                   showCount: true,
                 },
-                { component: "ImgSelect", label: "Ảnh cá nhân", img: "" },
+                {
+                  stt: idv4(),
+                  component: "ImgSelect",
+                  label: "Ảnh cá nhân",
+                  img: "",
+                },
               ],
             },
           ],
@@ -269,7 +286,7 @@ export default {
     },
     updateInput(data, id) {
       this.formInfos.forEach((form) => {
-        if (this.activePhase + 1 === form.stt) {
+        if (this.activePhase + 1 === 1) {
           form.fields.forEach((item) =>
             item.data.forEach((d) => {
               if (d.label === "Họ và tên") {
@@ -279,7 +296,7 @@ export default {
             })
           );
         }
-        if (this.activePhase + 1 === form.stt) {
+        if (this.activePhase + 1 === 2) {
           form.fields
             .filter((item) => item.id === id)
             .forEach((item) =>
@@ -291,6 +308,13 @@ export default {
             );
         }
       });
+      // let Arr = [];
+      // this.formInfos.forEach((form) => {
+      //   form.fields.forEach(
+      //     (item) => (Arr = item.data.filter((d) => d.stt === index)[0])
+      //   );
+      // });
+      // console.log(Arr);
     },
     updateDate(data, id) {
       this.formInfos.forEach((form) => {
@@ -535,12 +559,15 @@ export default {
             valid = true;
             oldJob.errorMessage = "This field is max 100 characters";
           }
-          if (!date.startDate && !date.endDate) {
+          if (!date.startDate || !date.endDate) {
             valid = true;
             date.errorMessage = "This field is required";
           } else if (startDate > endDate) {
             valid = true;
             date.errorMessage = "Start date must be less than end date";
+          } else if (startDate === endDate) {
+            valid = true;
+            date.errorMessage = "Inappropriate working hours.";
           }
           for (let j = 1; j < Arr.length; j++) {
             let date2 = Arr[j].data.find(
@@ -548,8 +575,12 @@ export default {
             );
 
             let nextStartDate = new Date(date2.startDate).getTime();
+            let nextEndDate = new Date(date2.endDate).getTime();
             if (i != j) {
-              if (nextStartDate < endDate && nextStartDate > startDate) {
+              if (
+                (nextStartDate < endDate && nextStartDate > startDate) ||
+                (nextEndDate > startDate && nextEndDate < endDate)
+              ) {
                 valid = true;
                 date2.errorMessage = `Inappropriate working hours.`;
               }
@@ -560,6 +591,7 @@ export default {
             oldJob.errorMessage = null;
             date.errorMessage = null;
           }
+          console.log(date);
         }
       }
       if (this.activePhase === 2) {
@@ -704,6 +736,15 @@ export default {
         height: 40px;
         line-height: 30px;
         background: #617d98;
+      }
+      .pass {
+        padding: 6px 12px;
+        width: 32px;
+        height: 32px;
+        background: #617d98;
+        border-radius: 90px;
+        font-size: 14px;
+        line-height: 21px;
       }
       .step-text {
         color: #333333;

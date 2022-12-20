@@ -1,7 +1,11 @@
 <template>
   <div>
     <p class="title">{{ this.label }}</p>
-    <DropZone @uploadFiles="uploadFiles" :maxFileLength="maxFileLength" />
+    <DropZone
+      @uploadFiles="uploadFiles"
+      :maxFileLength="maxFileLength"
+      :limitFiles="limitFiles"
+    />
   </div>
 </template>
 
@@ -12,6 +16,7 @@ export default {
     return {
       maxFileLength: 1,
       img: "",
+      limitFiles: ["png", "jpg", "jpeg"],
     };
   },
   props: ["label"],

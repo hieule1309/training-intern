@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div class="valid-groups">
-      <span class="must">Must</span>
-      <label class="text" for="name">{{ this.label }}</label>
-    </div>
+    <TitleGroup :title="this.label" />
     <div>
       <DatePicker
         placeholder="0000/00/00"
@@ -22,6 +19,7 @@
         v-model="date2"
         format="YYYY/MM/DD"
         class="date"
+        :class="{ 'error-box': this.errorMessage }"
         :default-value="new Date()"
         :disabled-date="disableAfterToday"
         @change="onChange"
@@ -34,6 +32,7 @@
 <script>
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+import TitleGroup from "./TitleGroup.vue";
 export default {
   data() {
     return {
@@ -41,7 +40,7 @@ export default {
       date2: "",
     };
   },
-  components: { DatePicker },
+  components: { DatePicker, TitleGroup },
   methods: {
     disableAfterToday(date) {
       const today = new Date();
@@ -60,24 +59,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.must {
-  padding: 2px 8px;
-  gap: 10px;
-  color: #ffffff;
-  width: 45px;
-  height: 20px;
-  font-size: 12px;
-  line-height: 20px;
-  background: #627d98;
-  border-radius: 3px;
-}
 .text {
   font-size: 14px;
   line-height: 20px;
   margin-left: 4px;
 }
 .error-box {
-  border: 1px 1solid red;
+  border: 1px solid red;
 }
 .date {
   width: 118px;

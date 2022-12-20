@@ -16,6 +16,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.valid-groups {
+  margin-bottom: 2px;
+}
 .must {
   padding: 2px 8px;
   gap: 10px;
