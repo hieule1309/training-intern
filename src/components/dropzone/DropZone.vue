@@ -10,8 +10,8 @@
         class="drop-zone"
       >
         <font-awesome-icon icon="cloud-arrow-up" class="icon" />
-        <p class="text">Drag and Drop Files</p>
-        <label for="dropzoneFile" class="text-link">Browse Files </label>
+        <p class="text">{{ title }}</p>
+        <label for="dropzoneFile" class="text-link">{{ triggerText }} </label>
         <input
           class="dropzone-file"
           type="file"
@@ -75,6 +75,12 @@ export default {
     limitFiles: {
       type: Array,
       required: false,
+    },
+    triggerText: {
+      type: String,
+    },
+    title: {
+      type: String,
     },
   },
   components: { FileItem },

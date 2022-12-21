@@ -4,7 +4,7 @@
     <div :class="{ 'select-group': this.delete }">
       <select
         class="options"
-        :class="{ fullWidth: this.delete, 'error-box': this.errorMessage }"
+        :class="{ fullWidth: this.delete, error: this.errorMessage }"
         v-model="value"
         @change="onChange"
       >
@@ -19,7 +19,7 @@
         @click="deleteForm"
       />
     </div>
-    <p :class="{ error: this.errorMessage }" v-if="this.errorMessage">
+    <p class="error-text" v-if="this.errorMessage">
       {{ this.errorMessage }}
     </p>
   </div>
@@ -51,6 +51,7 @@ export default {
 .title {
   font-size: 14px;
   line-height: 20px;
+  color: #333333;
 }
 .options {
   padding: 8px 10px;
@@ -60,10 +61,21 @@ export default {
   height: 40px;
 
   background: #ffffff;
+  font-size: 14px;
+  line-height: 20px;
 
   border: 1px solid #dbdbdb;
   border-radius: 4px;
 }
+// .options select {
+//   appearance: none;
+//   -moz-appearance: none;
+//   -webkit-appearance: none;
+//   background: transparent;
+//   background-image: url("@/assets/CaretDown.png");
+//   background-repeat: no-repeat;
+//   border: 2px solid gray;
+// }
 .select-group {
   display: flex;
   align-items: center;
@@ -84,11 +96,11 @@ export default {
   height: 32px;
   cursor: pointer;
 }
-.error {
+.error-text {
   font-size: 14px;
   color: red;
 }
-.error-box {
+.error {
   border: 1px solid red;
 }
 </style>

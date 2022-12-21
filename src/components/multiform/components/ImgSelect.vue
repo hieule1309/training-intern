@@ -5,6 +5,8 @@
       @uploadFiles="uploadFiles"
       :maxFileLength="maxFileLength"
       :limitFiles="limitFiles"
+      :title="title"
+      :triggerText="triggerText"
     />
   </div>
 </template>
@@ -17,6 +19,8 @@ export default {
       maxFileLength: 2,
       img: "",
       limitFiles: ["png", "jpg", "jpeg"],
+      title: "Hãy kéo và thả ảnh vào đây hoặc",
+      triggerText: "nhấn vào đây",
     };
   },
   props: ["label"],
@@ -34,5 +38,6 @@ export default {
 .title {
   font-size: 14px;
   line-height: 20px;
+  color: #333333;
 }
 </style>

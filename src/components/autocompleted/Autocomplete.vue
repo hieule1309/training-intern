@@ -3,9 +3,8 @@
     <label for="focus">
       <div class="popover">
         <div class="search-bar" tabindex="0">
-          <button class="search-icon">
-            <font-awesome-icon icon="search" />
-          </button>
+          <img src="@/assets/search.png" class="search-icon" />
+
           <p
             v-for="(item, index) in itemSelected"
             :key="index"
@@ -112,9 +111,9 @@ export default {
   padding: 8px 10px;
   gap: 4px;
   width: 100%;
-  /* height: 48px; */
+  align-content: center;
   background: rgba(230, 249, 255, 0.2);
-  /* Black / 04 */
+  min-height: 48px;
   border: 1px solid #dbdbdb;
   border-radius: 4px;
   flex-wrap: wrap;
@@ -126,46 +125,46 @@ export default {
   font-size: 14px;
   cursor: pointer;
   margin-left: 8px;
+  color: #627d98;
 }
 .search-icon {
-  width: 24px;
-  height: 24px;
   color: #dcdcdc;
   border: none;
   background-color: transparent;
-  font-size: 20px;
-  text-align: center;
+  font-size: 14px;
 }
 .selected-item {
-  margin: 2px;
+  margin: 0 2px;
   display: flex;
   align-items: center;
   padding: 4px 8px;
   justify-content: space-between;
-  /* min-width: 150px; */
-  height: 32px;
+  line-height: 20px;
+  /* height: 32px; */
   background: #f0f4f8;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
+  color: #627d98;
+  font-size: 14px;
 }
 .popover {
-  min-height: 50px;
   border-radius: 3px;
 
   background-color: #fff;
-  text-align: center;
 }
 .popover input {
-  font-size: 16px;
   border: none;
 }
 .option {
   max-height: 150px;
   overflow-y: scroll;
-  margin-top: 5px;
+  margin-top: 3px;
   background-color: #f1f5f8;
   filter: drop-shadow(0px 1px 8px rgba(102, 102, 102, 0.25));
   border-radius: 4px;
+}
+.option::-webkit-scrollbar {
+  display: none;
 }
 ul {
   list-style: none;
@@ -177,6 +176,9 @@ li {
   background-color: #f1f5f8;
   cursor: pointer;
   height: 40px;
+  color: #486581;
+  font-size: 16px;
+  line-height: 23px;
 }
 .option ul li.selected {
   background-color: rgb(130, 255, 113);
@@ -184,5 +186,6 @@ li {
 }
 .option ul li:hover {
   background-color: #617d98;
+  color: #fff;
 }
 </style>

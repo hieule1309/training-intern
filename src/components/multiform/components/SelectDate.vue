@@ -7,7 +7,7 @@
         v-model="date1"
         format="YYYY/MM/DD"
         class="date"
-        :class="{ 'error-box': this.errorMessage }"
+        :class="{ error: this.errorMessage }"
         :disabled-date="disableAfterToday"
         @change="onChange"
       />
@@ -18,12 +18,12 @@
         v-model="date2"
         format="YYYY/MM/DD"
         class="date"
-        :class="{ 'error-box': this.errorMessage }"
+        :class="{ error: this.errorMessage }"
         :disabled-date="disableAfterToday"
         @change="onChange"
       />
     </div>
-    <p v-if="this.errorMessage" class="error">{{ this.errorMessage }}</p>
+    <p v-if="this.errorMessage" class="error-text">{{ this.errorMessage }}</p>
   </div>
 </template>
 
@@ -62,7 +62,7 @@ export default {
   line-height: 20px;
   margin-left: 4px;
 }
-.error-box {
+.error {
   border: 1px solid red;
 }
 .date {
@@ -70,9 +70,9 @@ export default {
   border-radius: 6px;
 }
 .minus {
-  margin: 0 4px 4px 4px;
+  margin: 0 10px 4px 10px;
 }
-.error {
+.error-text {
   font-size: 14px;
   color: red;
 }

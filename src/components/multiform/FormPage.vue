@@ -99,6 +99,6 @@ export default {
   width: 1026px;
 }
 .component {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 </style>

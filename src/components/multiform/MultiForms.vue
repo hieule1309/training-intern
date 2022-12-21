@@ -615,6 +615,7 @@ export default {
         }
         const idx = this.formInfos.findIndex((form) => form.stt === 2);
         this.formInfos[idx].fields = Arr;
+        this.scrollToError();
       }
       if (this.activePhase === 2) {
         if (!this.formValue.reason) {
@@ -695,6 +696,13 @@ export default {
 
       return (this.isCheck = valid);
     },
+    scrollToError() {
+      let errorP = document.querySelector(".error").offsetTop;
+      window.scrollTo({
+        top: errorP - 100,
+        behavior: "smooth",
+      });
+    },
   },
   computed: {},
   watch: {},
@@ -773,6 +781,7 @@ export default {
         font-size: 14px;
         line-height: 24px;
         text-align: center;
+        font-weight: 500;
       }
     }
   }

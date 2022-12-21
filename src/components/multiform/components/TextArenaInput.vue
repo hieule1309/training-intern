@@ -9,7 +9,11 @@
       :class="{ error: this.errorMessage }"
       @input="charCount"
     ></textarea>
-    <p :class="{ 'error-text': this.errorMessage }" v-if="showCount">
+    <p
+      :class="{ 'error-text': this.errorMessage }"
+      class="count"
+      v-if="showCount"
+    >
       {{ this.char }}/{{ this.maxLength }}
     </p>
     <p class="error-text" v-if="this.errorMessage">
@@ -65,6 +69,11 @@ export default {
   .title {
     font-size: 14px;
     line-height: 20px;
+    color: #333333;
+  }
+  .count {
+    font-size: 16px;
+    line-height: 24px;
   }
 }
 </style>

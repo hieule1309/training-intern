@@ -29,10 +29,14 @@ export default {
   line-height: 20px;
   background: #627d98;
   border-radius: 3px;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600;
 }
 .text {
   font-size: 14px;
   line-height: 20px;
-  margin-left: 4px;
+  margin-left: 8px;
+  color: #333333;
 }
 </style>

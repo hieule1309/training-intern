@@ -8,7 +8,7 @@
         :itemSelected="this.positionSelected"
         @selectedItem="selectedItem"
         @deletedItem="deletedItem"
-        placeholder="Choose your position"
+        :place="'Choose your position'"
       />
     </div>
   </div>
@@ -52,6 +52,7 @@ export default {
 .title {
   font-size: 14px;
   line-height: 20px;
+  color: #333333;
 }
 .box-select {
   width: 528px;

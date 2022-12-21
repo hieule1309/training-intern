@@ -7,6 +7,8 @@
       :maxsize="maxSize"
       :maxFileLength="maxFileLength"
       :limitFiles="limitFiles"
+      :title="title"
+      :triggerText="triggerText"
     />
   </div>
 </template>
@@ -30,6 +32,8 @@ export default {
       maxFilesUpload: MAX_FILES,
       maxFileLength: FILES_LENGTH,
       limitFiles: LIMIT_FILES,
+      title: "Drag and Drop Files",
+      triggerText: "Browse Files",
     };
   },
   components: { Dropzone },

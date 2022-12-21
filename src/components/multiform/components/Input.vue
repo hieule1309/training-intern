@@ -5,7 +5,7 @@
     <div>
       <input
         class="input"
-        :class="{ errorm: this.errorMessage }"
+        :class="{ error: this.errorMessage }"
         type="text"
         v-model="value"
         @input="onChange"
@@ -68,6 +68,7 @@ export default {
   font-size: 14px;
   line-height: 20px;
   margin-left: 4px;
+  color: #333333;
 }
 .input {
   width: 528px;
@@ -75,8 +76,12 @@ export default {
   border: 1px solid #dcdcdc;
   border-radius: 4px;
   padding: 8px 10px;
-  height: 100%;
+  min-height: 40px;
   line-height: 20px;
+  color: #000000;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
 }
 .error-text {
   color: #ed5d5d;
@@ -100,9 +105,7 @@ export default {
 .error {
   border: 1px solid red;
 }
-.errorm {
-  border: 1px solid red;
-}
+
 .isCheck {
   color: red;
   font-size: 14px;
