@@ -16,15 +16,16 @@
 
 <script>
 import Autocomplete from "@/components/autocompleted/Autocomplete.vue";
+
 export default {
   data() {
     return {
       position: [
-        { name: "FE Developer" },
-        { name: "BE Developer" },
-        { name: "Software Engineer" },
-        { name: "AI Engineer" },
-        { name: "Embedded Software" },
+        { id: 1, name: "FE Developer" },
+        { id: 2, name: "BE Developer" },
+        { id: 3, name: "Software Engineer" },
+        { id: 4, name: "AI Engineer" },
+        { id: 5, name: "Embedded Software" },
       ],
       positionSelected: [],
     };
@@ -43,9 +44,6 @@ export default {
       this.position.push(data.item);
       this.$emit("updateJob", this.positionSelected);
     },
-  },
-  mounted() {
-    console.log("jobbbbbbb");
   },
 };
 </script>

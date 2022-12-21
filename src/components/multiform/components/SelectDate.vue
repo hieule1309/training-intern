@@ -8,7 +8,6 @@
         format="YYYY/MM/DD"
         class="date"
         :class="{ 'error-box': this.errorMessage }"
-        :default-value="new Date()"
         :disabled-date="disableAfterToday"
         @change="onChange"
       />
@@ -20,7 +19,6 @@
         format="YYYY/MM/DD"
         class="date"
         :class="{ 'error-box': this.errorMessage }"
-        :default-value="new Date()"
         :disabled-date="disableAfterToday"
         @change="onChange"
       />
@@ -49,12 +47,12 @@ export default {
     onChange() {
       this.$emit(
         "updateDate",
-        { date1: this.date1, date2: this.date2 },
+        { startDate: this.date1, endDate: this.date2 },
         this.id
       );
     },
   },
-  props: ["label", "range", "dateCheck", "errorMessage", "id"],
+  props: ["label", "range", "errorMessage", "id"],
 };
 </script>
 

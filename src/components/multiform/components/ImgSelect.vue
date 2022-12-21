@@ -14,7 +14,7 @@ import DropZone from "@/components/dropzone/DropZone.vue";
 export default {
   data() {
     return {
-      maxFileLength: 1,
+      maxFileLength: 2,
       img: "",
       limitFiles: ["png", "jpg", "jpeg"],
     };

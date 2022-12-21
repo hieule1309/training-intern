@@ -5,7 +5,7 @@
       <label class="text" for="name">{{ this.label }}</label>
     </div>
     <div :class="{ error: this.errorMessage }" class="box">
-      <input class="input" type="number" v-model="value" @input="errorHandle" />
+      <input class="input" type="number" v-model="value" @input="onChange" />
       <span class="VND">VND</span>
     </div>
     <p class="error-text" v-if="this.errorMessage">
@@ -25,12 +25,6 @@ export default {
   props: ["label", "maxLength", "small", "isNumber", "errorMessage"],
   computed: {},
   methods: {
-    errorHandle() {
-      this.value.length > this.maxLength
-        ? (this.error = true)
-        : (this.error = false);
-      this.onChange();
-    },
     onChange() {
       this.$emit("updateSalary", this.value);
     },

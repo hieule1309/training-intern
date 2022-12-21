@@ -2,7 +2,7 @@
   <div>
     <div class="form-container" :class="{ xlWidth: this.step === 1 }">
       <div v-for="(item, index) in form" :key="index">
-        <keep-alive :max="10">
+        <KeepAlive>
           <component
             :is="item.component"
             :label="item.label"
@@ -16,8 +16,6 @@
             :optionsSelect="item.optionsSelect"
             :id="id"
             :stt="item.stt"
-            :isCheck="isCheck"
-            :dateCheck="dateCheck"
             :errorMessage="item.errorMessage"
             :required="item.required"
             @updateInput="updateInput"
@@ -30,7 +28,7 @@
             @updateSalary="updateSalary"
             class="component"
           ></component>
-        </keep-alive>
+        </KeepAlive>
       </div>
     </div>
   </div>
@@ -49,10 +47,10 @@ export default {
     return {};
   },
 
-  props: ["form", "id", "isCheck", "dateCheck", "step"],
+  props: ["form", "id", "step"],
   methods: {
-    updateInput(data, id, index) {
-      this.$emit("updateInput", data, id, index);
+    updateInput(data, id) {
+      this.$emit("updateInput", data, id);
     },
     updateDate(data, id) {
       this.$emit("updateDate", data, id);

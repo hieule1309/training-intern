@@ -40,9 +40,6 @@ export default {
     },
   },
   components: { TitleGroup },
-  mounted() {
-    console.log("textarena mounted");
-  },
 };
 </script>
 

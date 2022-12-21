@@ -16,6 +16,7 @@
       </div>
       <div class="line"></div>
     </div>
+
     <FormPage
       v-for="(field, index) in formInfos[activePhase].fields"
       :key="index"
@@ -30,8 +31,6 @@
       @updateJob="updateJob"
       @updateImg="updateImg"
       @updateSalary="updateSalary"
-      :isCheck="isCheck"
-      :dateCheck="dateCheck"
     />
     <div class="add-company" v-if="activePhase === 1">
       <img class="plus" src="@/assets/Plus.png" />
@@ -94,7 +93,8 @@ export default {
                   stt: idv4(),
                   component: "Input",
                   label: "Họ và tên",
-                  name: "",
+                  key: "fullName",
+                  value: "",
                   maxLength: 100,
                   errorMessage: null,
                   required: true,
@@ -103,7 +103,8 @@ export default {
                   stt: idv4(),
                   component: "SelectDate",
                   label: "Ngày sinh",
-                  birthday: "",
+                  key: "birthday",
+                  value: "",
                   errorMessage: null,
                   required: true,
                 },
@@ -111,29 +112,34 @@ export default {
                   stt: idv4(),
                   component: "Select",
                   label: "Thành phố",
-                  city: "",
+                  key: "city",
+                  value: "",
                   options: ["Hà Nội", "Đà Nẵng", "TP Hồ Chí Minh"],
                 },
                 {
                   stt: idv4(),
                   component: "JobSelect",
                   label: "Vị trí làm việc",
+                  key: "positions",
                   subTitle: "Có thể chọn nhiều vị trí mà bạn muốn làm việc",
-                  positions: [],
+                  value: [],
                 },
                 {
                   stt: idv4(),
                   component: "TextArenaInput",
                   label: "Mô tả về bản thân",
-                  description: "",
+                  key: "aboutYourSelf",
+                  value: "",
                   maxLength: 1000,
+                  errorMessage: null,
                   showCount: true,
                 },
                 {
                   stt: idv4(),
                   component: "ImgSelect",
                   label: "Ảnh cá nhân",
-                  img: "",
+                  key: "img",
+                  value: "",
                 },
               ],
             },
@@ -148,23 +154,26 @@ export default {
                 {
                   component: "Select",
                   label: "Company",
-                  company: "",
+                  key: "company",
+                  value: "",
                   required: true,
                   options: ["VNG", "MOR", "FPT"],
+                  errorMessage: null,
                   delete: true,
                 },
                 {
                   component: "Input",
                   label: "Vị trí từng làm",
-                  oldPosition: "",
+                  key: "oldPosition",
+                  value: "",
                   errorMessage: null,
                   required: true,
                 },
                 {
                   component: "SelectDate",
                   label: "Thời gian làm việc",
-                  startDate: "",
-                  endDate: "",
+                  key: "workingTime",
+                  value: { startDate: "", endDate: "" },
                   required: true,
                   errorMessage: null,
                   range: true,
@@ -172,9 +181,11 @@ export default {
                 {
                   component: "TextArenaInput",
                   label: "Mô tả công việc",
-                  description: "",
+                  key: "aboutWork",
+                  value: "",
                   maxLength: 5000,
                   showCount: false,
+                  errorMessage: null,
                 },
               ],
             },
@@ -189,7 +200,9 @@ export default {
                 {
                   component: "TextArenaInput",
                   label: "Lý do muốn ứng tuyển vào công ty",
-                  description: "",
+                  key: "reason",
+                  value: "",
+                  errorMessage: null,
                   maxLength: 1000,
                   required: true,
                   showCount: true,
@@ -197,9 +210,10 @@ export default {
                 {
                   component: "InputSalary",
                   label: "Mức lương mong muốn",
-                  salary: "",
+                  key: "salary",
+                  value: "",
                   maxLength: 10,
-
+                  errorMessage: null,
                   required: true,
                 },
               ],
@@ -209,7 +223,6 @@ export default {
       ],
       activePhase: 0,
       isCheck: false,
-      dateCheck: false,
       formValue: {
         yourself: "",
         expWorks: [],
@@ -234,6 +247,7 @@ export default {
       this.validate();
       if (!this.isCheck) {
         console.log("formValues", this.formValue);
+        alert("Thanks for Submit");
       }
     },
     add() {
@@ -245,7 +259,9 @@ export default {
               {
                 component: "Select",
                 label: "Company",
-                company: "",
+                key: "company",
+                value: "",
+                errorMessage: null,
                 required: true,
                 options: ["VNG", "MOR", "FPT"],
                 delete: true,
@@ -253,22 +269,27 @@ export default {
               {
                 component: "Input",
                 label: "Vị trí từng làm",
-                oldPosition: "",
+                key: "oldPosition",
+                value: "",
+                errorMessage: null,
                 required: true,
               },
               {
                 component: "SelectDate",
                 label: "Thời gian làm việc",
-                starDate: "",
-                endDate: "",
+                key: "workingTime",
+                value: { startDate: "", endDate: "" },
                 required: true,
+                errorMessage: null,
                 range: true,
               },
               {
                 component: "TextArenaInput",
                 label: "Mô tả công việc",
-                description: "",
+                key: "aboutWork",
+                value: "",
                 maxLength: 5000,
+                errorMessage: null,
                 showCount: false,
               },
             ],
@@ -286,23 +307,23 @@ export default {
     },
     updateInput(data, id) {
       this.formInfos.forEach((form) => {
-        if (this.activePhase + 1 === 1) {
+        if (this.activePhase + 1 === form.stt) {
           form.fields.forEach((item) =>
             item.data.forEach((d) => {
-              if (d.label === "Họ và tên") {
-                d.name = data;
-                this.formValue.name = d.name;
+              if (d.key === "fullName") {
+                d.value = data;
+                this.formValue.name = d.value;
               }
             })
           );
         }
-        if (this.activePhase + 1 === 2) {
+        if (this.activePhase + 1 === form.stt) {
           form.fields
             .filter((item) => item.id === id)
             .forEach((item) =>
               item.data.forEach((d) => {
-                if (d.label === "Vị trí từng làm") {
-                  d.oldPosition = data;
+                if (d.key === "oldPosition") {
+                  d.value = data;
                 }
               })
             );
@@ -321,9 +342,9 @@ export default {
         if (this.activePhase + 1 === form.stt) {
           form.fields.forEach((item) =>
             item.data.forEach((d) => {
-              if (d.label === "Ngày sinh") {
-                d.birthday = data.date1;
-                this.formValue.birthday = d.birthday;
+              if (d.key === "birthday") {
+                d.value = data.startDate;
+                this.formValue.birthday = d.value;
               }
             })
           );
@@ -333,9 +354,9 @@ export default {
             .filter((item) => item.id === id)
             .forEach((item) =>
               item.data.forEach((d) => {
-                if (d.label === "Thời gian làm việc") {
-                  d.startDate = data.date1;
-                  d.endDate = data.date2;
+                if (d.key === "workingTime") {
+                  d.value.startDate = data.startDate;
+                  d.value.endDate = data.endDate;
                 }
               })
             );
@@ -347,9 +368,9 @@ export default {
         if (this.activePhase + 1 === form.stt) {
           form.fields.forEach((item) =>
             item.data.forEach((d) => {
-              if (d.label === "Thành phố") {
-                d.city = data;
-                this.formValue.city = d.city;
+              if (d.key === "city") {
+                d.value = data;
+                this.formValue.city = d.value;
               }
             })
           );
@@ -359,8 +380,8 @@ export default {
             .filter((item) => item.id === id)
             .forEach((item) =>
               item.data.forEach((d) => {
-                if (d.label === "Company") {
-                  d.company = data;
+                if (d.key === "company") {
+                  d.value = data;
                 }
               })
             );
@@ -372,9 +393,9 @@ export default {
         if (this.activePhase + 1 === form.stt) {
           form.fields.forEach((item) =>
             item.data.forEach((d) => {
-              if (d.label === "Mô tả về bản thân") {
-                d.description = data;
-                this.formValue.yourself = d.description;
+              if (d.key === "aboutYourSelf") {
+                d.value = data;
+                this.formValue.yourself = d.value;
               }
             })
           );
@@ -384,8 +405,8 @@ export default {
             .filter((item) => item.id === id)
             .forEach((item) =>
               item.data.forEach((d) => {
-                if (d.label === "Mô tả công việc") {
-                  d.description = data;
+                if (d.key === "aboutWork") {
+                  d.value = data;
                 }
               })
             );
@@ -393,9 +414,9 @@ export default {
         if (this.activePhase + 1 === form.stt) {
           form.fields.forEach((item) =>
             item.data.forEach((d) => {
-              if (d.label === "Lý do muốn ứng tuyển vào công ty") {
-                d.description = data;
-                this.formValue.reason = d.description;
+              if (d.key === "reason") {
+                d.value = data;
+                this.formValue.reason = d.value;
               }
             })
           );
@@ -407,9 +428,9 @@ export default {
         if (this.activePhase + 1 === form.stt) {
           form.fields.forEach((item) =>
             item.data.forEach((d) => {
-              if (d.label === "Vị trí làm việc") {
-                d.positions = data;
-                this.formValue.job = d.positions;
+              if (d.key === "position") {
+                d.value = data;
+                this.formValue.job = d.value;
               }
             })
           );
@@ -421,9 +442,9 @@ export default {
         if (this.activePhase + 1 === form.stt) {
           form.fields.forEach((item) =>
             item.data.forEach((d) => {
-              if (d.label === "Ảnh cá nhân") {
-                d.img = data;
-                this.formValue.img = d.img;
+              if (d.key === "img") {
+                d.value = data;
+                this.formValue.img = d.value;
               }
             })
           );
@@ -432,16 +453,14 @@ export default {
     },
     updateSalary(data) {
       this.formInfos.forEach((form) => {
-        if (this.activePhase + 1 === form.stt) {
-          form.fields.forEach((item) =>
-            item.data.forEach((d) => {
-              if (d.label === "Mức lương mong muốn") {
-                d.salary = data;
-                this.formValue.salary = d.salary;
-              }
-            })
-          );
-        }
+        form.fields.forEach((item) =>
+          item.data.forEach((d) => {
+            if (d.key === "salary") {
+              d.value = data;
+              this.formValue.salary = d.value;
+            }
+          })
+        );
       });
     },
     getValue() {
@@ -453,11 +472,11 @@ export default {
               this.formValue.expWorks.push({
                 id: idv4(),
                 label: field.data[0].label,
-                company: field.data[0].company,
-                oldJob: field.data[1].oldPosition,
-                startDate: field.data[2].startDate,
-                endDate: field.data[2].endDate,
-                description: field.data[3].description,
+                company: field.data[0].value,
+                oldJob: field.data[1].value,
+                startDate: field.data[2].value,
+                endDate: field.data[2].value,
+                description: field.data[3].value,
               });
             }
           });
@@ -477,7 +496,7 @@ export default {
             if (this.activePhase + 1 === form.stt) {
               form.fields.forEach((item) =>
                 item.data.forEach((d) => {
-                  if (d.label === "Họ và tên") {
+                  if (d.key === "fullName") {
                     d.errorMessage = "This field is required";
                   }
                 })
@@ -490,7 +509,7 @@ export default {
             if (this.activePhase + 1 === form.stt) {
               form.fields.forEach((item) =>
                 item.data.forEach((d) => {
-                  if (d.label === "Họ và tên") {
+                  if (d.key === "fullName") {
                     d.errorMessage = "This field is max 100 characters";
                   }
                 })
@@ -514,7 +533,7 @@ export default {
             if (this.activePhase + 1 === form.stt) {
               form.fields.forEach((item) =>
                 item.data.forEach((d) => {
-                  if (d.label === "Ngày sinh") {
+                  if (d.key === "birthday") {
                     d.errorMessage = "This field is required";
                   }
                 })
@@ -529,7 +548,7 @@ export default {
             if (this.activePhase + 1 === form.stt) {
               form.fields.forEach((item) =>
                 item.data.forEach((d) => {
-                  if (d.label === "Mô tả về bản thân") {
+                  if (d.key === "aboutYourSelf") {
                     d.errorMessage = "This field is max 1000 characters";
                   }
                 })
@@ -539,27 +558,29 @@ export default {
         }
       }
       if (this.activePhase === 1) {
-        const Arr = this.formInfos.filter((form) => form.stt === 2)[0].fields;
+        const Arr = JSON.parse(
+          JSON.stringify(this.formInfos.find((form) => form.stt === 2).fields)
+        );
 
         for (let i = 0; i < Arr.length; i++) {
-          let company = Arr[i].data.find((f) => f.label === "Company");
-          let oldJob = Arr[i].data.find((f) => f.label === "Vị trí từng làm");
-          let date = Arr[i].data.find((f) => f.label === "Thời gian làm việc");
+          let company = Arr[i].data.find((f) => f.key === "company");
+          let oldJob = Arr[i].data.find((f) => f.key === "oldPosition");
+          let date = Arr[i].data.find((f) => f.key === "workingTime");
           // let des = Arr[i].data.find((f) => f.label === "Mô tả công việc");
-          let startDate = new Date(date.startDate).getTime();
-          let endDate = new Date(date.endDate).getTime();
-          if (!company.company) {
+          let startDate = new Date(date.value.startDate).getTime();
+          let endDate = new Date(date.value.endDate).getTime();
+          if (!company.value) {
             valid = true;
             company.errorMessage = "This field is required";
           }
-          if (!oldJob.oldPosition) {
+          if (!oldJob.value) {
             valid = true;
             oldJob.errorMessage = "This field is required";
-          } else if (oldJob.oldPosition.length > 100) {
+          } else if (oldJob.value.length > 100) {
             valid = true;
             oldJob.errorMessage = "This field is max 100 characters";
           }
-          if (!date.startDate || !date.endDate) {
+          if (!date.value.startDate || !date.value.endDate) {
             valid = true;
             date.errorMessage = "This field is required";
           } else if (startDate > endDate) {
@@ -574,39 +595,38 @@ export default {
               (f) => f.label === "Thời gian làm việc"
             );
 
-            let nextStartDate = new Date(date2.startDate).getTime();
-            let nextEndDate = new Date(date2.endDate).getTime();
+            let nextStartDate = new Date(date2.value.startDate).getTime();
+            let nextEndDate = new Date(date2.value.endDate).getTime();
             if (i != j) {
               if (
-                (nextStartDate < endDate && nextStartDate > startDate) ||
-                (nextEndDate > startDate && nextEndDate < endDate)
+                (nextStartDate <= endDate && nextStartDate >= startDate) ||
+                (nextEndDate >= startDate && nextEndDate <= endDate)
               ) {
                 valid = true;
                 date2.errorMessage = `Inappropriate working hours.`;
               }
             }
           }
-          if (!valid) {
-            company.errorMessage = null;
-            oldJob.errorMessage = null;
-            date.errorMessage = null;
-          }
-          console.log(date);
+          // if (!valid) {
+          //   company.errorMessage = null;
+          //   oldJob.errorMessage = null;
+          //   date.errorMessage = null;
+          // }
         }
+        const idx = this.formInfos.findIndex((form) => form.stt === 2);
+        this.formInfos[idx].fields = Arr;
       }
       if (this.activePhase === 2) {
         if (!this.formValue.reason) {
           valid = true;
           this.formInfos.forEach((form) => {
-            if (this.activePhase + 1 === form.stt) {
-              form.fields.forEach((item) =>
-                item.data.forEach((d) => {
-                  if (d.label === "Lý do muốn ứng tuyển vào công ty") {
-                    d.errorMessage = "This field is required";
-                  }
-                })
-              );
-            }
+            form.fields.forEach((item) =>
+              item.data.forEach((d) => {
+                if (d.key === "reason") {
+                  d.errorMessage = "This field is required";
+                }
+              })
+            );
           });
         } else if (this.formValue.reason.length > 1000) {
           valid = true;
@@ -614,7 +634,7 @@ export default {
             if (this.activePhase + 1 === form.stt) {
               form.fields.forEach((item) =>
                 item.data.forEach((d) => {
-                  if (d.label === "Lý do muốn ứng tuyển vào công ty") {
+                  if (d.key === "reason") {
                     d.errorMessage = "This field is max 1000 characters";
                   }
                 })
@@ -638,7 +658,7 @@ export default {
             if (this.activePhase + 1 === form.stt) {
               form.fields.forEach((item) =>
                 item.data.forEach((d) => {
-                  if (d.label === "Mức lương mong muốn") {
+                  if (d.key === "salary") {
                     d.errorMessage = "This field is required";
                   }
                 })
@@ -651,7 +671,7 @@ export default {
             if (this.activePhase + 1 === form.stt) {
               form.fields.forEach((item) =>
                 item.data.forEach((d) => {
-                  if (d.label === "Mức lương mong muốn") {
+                  if (d.key === "salary") {
                     d.errorMessage = "This field is max 10 characters";
                   }
                 })
@@ -663,7 +683,9 @@ export default {
             if (this.activePhase + 1 === form.stt) {
               form.fields.forEach((item) =>
                 item.data.forEach((d) => {
-                  d.errorMessage = null;
+                  if (d.key === "salary") {
+                    d.errorMessage = null;
+                  }
                 })
               );
             }

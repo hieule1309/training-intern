@@ -31,7 +31,6 @@ export default {
     "label",
     "maxLength",
     "isNumber",
-    "isCheck",
     "errorMessage",
     "id",
     "required",
@@ -40,18 +39,15 @@ export default {
   components: { TitleGroup },
   computed: {},
   methods: {
-    errorHandle() {
-      this.value.length > this.maxLength
-        ? (this.error = true)
-        : (this.error = false);
-      this.onChange();
-    },
+    // errorHandle() {
+    //   this.value.length > this.maxLength
+    //     ? (this.error = true)
+    //     : (this.error = false);
+    //   this.onChange();
+    // },
     onChange() {
-      this.$emit("updateInput", this.value, this.id, this.stt);
+      this.$emit("updateInput", this.value, this.id);
     },
-  },
-  mounted() {
-    console.log("Input");
   },
 };
 </script>
